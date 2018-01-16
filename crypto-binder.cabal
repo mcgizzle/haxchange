@@ -16,6 +16,7 @@ extra-source-files:  README.md
 executable crypto-binder
   hs-source-dirs:      src
   main-is:             Main.hs
+  other-modules:       Types
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5
                      , wreq
@@ -25,3 +26,4 @@ executable crypto-binder
                      , containers
                      , text
                      , time
+                     , iso8601-time
