@@ -9,6 +9,15 @@ import Data.Time.ISO8601
 import Data.Aeson
 import Text.Read
 
+
+type Params = [(Text,Text)]
+
+data Opts = Opts {
+                   optPath :: String
+                 , optParams :: Params 
+                 }
+
+
 newtype Time = Time UTCTime 
         deriving (Eq,Show)
 
@@ -51,4 +60,17 @@ instance FromJSON Market where
                 created <- o .: "Created"
                 pure Market{..}
 
+data Ticker = 
+        Ticker {
+                 bid :: Float
+               , ask :: Float
+               , last :: Float
+               }
+               deriving (Eq,Show)
 
+instance FromJSON Ticker where
+        parseJSON = withObject "Ticker" $ \o -> do
+                bid <- o .: "Bid"
+                ask <- o .: "Ask"
+                last <- o .: "Last"
+                pure Ticker{..}
