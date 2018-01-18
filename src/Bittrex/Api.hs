@@ -1,11 +1,11 @@
-module Api where
+module Bittrex.Api where
 
-import Types
-import Internal
+import Bittrex.Types
+import Bittrex.Internal
 import Data.Text
 import Data.Monoid
 
-defaultOpts = Opts mempty mempty
+defaultOpts = Opts mempty mempty "public"
 
 getMarkets :: IO (Either String [Market])
 getMarkets = runApi defaultOpts { optPath = "getmarkets"}

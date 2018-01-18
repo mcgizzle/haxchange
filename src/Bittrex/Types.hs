@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-module Types where
+module Bittrex.Types where
 
 import Data.Maybe
 import Data.Text
@@ -13,8 +13,9 @@ import Text.Read
 type Params = [(Text,Text)]
 
 data Opts = Opts {
-                   optPath :: String
-                 , optParams :: Params 
+                   optPath    :: String
+                 , optParams  :: Params 
+                 , optApiType :: String
                  }
 
 
