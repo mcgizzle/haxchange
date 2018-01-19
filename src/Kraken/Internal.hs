@@ -5,6 +5,8 @@ module Kraken.Internal where
 
 import Kraken.Types
 
+import Util
+import Control.Arrow (first)
 import Network.Wreq
 import Control.Lens 
 import Data.Aeson.Lens 
@@ -39,13 +41,15 @@ get opts@Opts{..} = do
 post :: FromJSON r => Opts -> IO (Either String r)
 post opts@Opts{..} = do
         nonce <- Prelude.head . splitOn "." . show <$> getPOSIXTime
-        let body = [ "nonce" := nonce ] <> optPost
+        let body = [ "nonce" := nonce ] <> body' 
+            --body' = mconcat (fmap (\(x,y) -> [Byte.pack x := Byte.pack y]) optPost)
+            body' = unzipWith (:=) $ fmap (first Byte.pack) optPost
         let url = intercalate "/" [ "https://api.kraken.com/0"
                                   , optApiType
                                   , optPath ]
         let apisign = B64.encode $ hmac b64Api (uri <> nonceAndPost)
             uri = Byte.pack $ "/0/" ++ optApiType ++ "/" ++ optPath
-            nonceAndPost = SHA256.hash $ Byte.pack nonce <> Byte.pack (show body)
+            nonceAndPost = SHA256.hash $ Byte.pack nonce <> Byte.pack ("nonce="++nonce)
             Right b64Api = B64.decode $ Byte.pack optApiPrivKey
         let opts' = defaults & header "Accept" .~ ["application/json"] 
                              & header "API-Key" .~ [Byte.pack optApiPubKey] 

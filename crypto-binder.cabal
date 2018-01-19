@@ -33,3 +33,4 @@ library
                      , base64-bytestring
                      , cryptohash
                      , cryptohash-sha512
+                     , ghc
