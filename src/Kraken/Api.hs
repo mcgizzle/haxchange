@@ -7,7 +7,7 @@ import qualified Data.Text as Text
 import Data.List
 import Data.Monoid
 
-defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
+defaultOpts = Opts mempty mempty "public" mempty mempty mempty
 
 getKeys :: IO [String]
 getKeys = lines <$> readFile "keys.txt"

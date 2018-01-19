@@ -23,7 +23,6 @@ data Opts = Opts {
                  , optApiPubKey  :: String
                  , optApiPrivKey :: String
                  , optPost       :: [FormParam]
-                 , optPostData   :: [String]
                  }
 
 

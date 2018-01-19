@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE PackageImports #-}
 module Kraken.Internal where
 
 import Kraken.Types
@@ -10,13 +11,14 @@ import Data.Aeson.Lens
 import Data.Aeson
 import Data.Monoid
 import qualified Data.Text as Text
+import Data.Text.Encoding (decodeUtf8)
 import Data.List (intercalate)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromJust)
 import Data.Time.Clock.POSIX
 import qualified Data.ByteString.Char8 as Byte
 import Data.ByteString.Base64 as B64
-import Crypto.Hash.SHA512 as SHA512
+import "cryptohash-sha512" Crypto.Hash.SHA512 (hmac)
 import Crypto.Hash.SHA256 as SHA256
 
 get :: FromJSON r => Opts -> IO (Either String r)
@@ -41,10 +43,10 @@ post opts@Opts{..} = do
         let url = intercalate "/" [ "https://api.kraken.com/0"
                                   , optApiType
                                   , optPath ]
-        let apisign = SHA512.hash $ urlBS <> nonceAndPost <> b64Api
-            urlBS = Byte.pack url
-            nonceAndPost = SHA256.hash $ Byte.pack (concat optPostData) <> Byte.pack nonce
-            b64Api = B64.encode $ Byte.pack optApiPrivKey
+        let apisign = B64.encode $ hmac b64Api (uri <> nonceAndPost)
+            uri = Byte.pack $ "/0/" ++ optApiType ++ "/" ++ optPath
+            nonceAndPost = SHA256.hash $ Byte.pack nonce <> Byte.pack (show body)
+            Right b64Api = B64.decode $ Byte.pack optApiPrivKey
         let opts' = defaults & header "Accept" .~ ["application/json"] 
                              & header "API-Key" .~ [Byte.pack optApiPubKey] 
                              & header "API-Sign" .~ [apisign]
