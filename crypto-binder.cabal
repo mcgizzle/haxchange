@@ -14,7 +14,8 @@ extra-source-files:  README.md
 library 
   exposed-modules:     Bittrex.Api
                      , Kraken.Api
-  other-modules:       Bittrex.Internal, Bittrex.Types
+  other-modules:       Types
+                     , Bittrex.Internal, Bittrex.Types
                      , Kraken.Internal, Kraken.Types
   hs-source-dirs:      src
   default-language:    Haskell2010
@@ -27,3 +28,7 @@ library
                      , text
                      , time
                      , iso8601-time
+                     , split
+                     , bytestring
+                     , base64-bytestring
+                     , cryptohash

@@ -1,5 +1,7 @@
 module Bittrex.Api where
 
+import Types
+
 import Bittrex.Types
 import Bittrex.Internal
 import Data.Text
