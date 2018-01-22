@@ -15,7 +15,7 @@ getKeys = lines <$> readFile "keys.txt"
 getTicker :: String -> IO (Either String Ticker)
 getTicker mrkt = get defaultOpts { optPath = "Ticker", optParams = [(Text.pack "pair",Text.pack $ delete '-' mrkt)]}
 
-getBalance :: IO (Either String Ticker)
+getBalance :: IO (Either String Balance)
 getBalance = do 
         [pubKey,privKey] <- getKeys 
         post defaultOpts { optPath = "Balance"

@@ -8,11 +8,18 @@ import qualified Data.Text as Text
 import Text.Read (readMaybe)
 import GHC.Generics
 
-newtype Balance = Balance (Map.Map MarketName Float)
+data Currency = EUR
+              | XBT
+              | XRP
+              | ETH
+              | LTC
+        deriving(Show,Read) 
+
+newtype Balance = Balance [(Currency,Float)]
         deriving(Show,Generic)
 
 data MarketName = MarketName MarketName' | NewMarket Text
-        deriving (Eq,Show)
+        deriving (Eq,Show,Read)
 
 instance FromJSON MarketName where
         parseJSON = withText "MarketName" $ \ t ->
@@ -29,5 +36,3 @@ data Ticker = Ticker {
                      , last :: Float
                      }
                deriving (Eq,Show)
-
-

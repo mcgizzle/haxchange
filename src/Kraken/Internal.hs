@@ -42,7 +42,6 @@ post :: FromJSON r => Opts -> IO (Either String r)
 post opts@Opts{..} = do
         nonce <- Prelude.head . splitOn "." . show <$> getPOSIXTime
         let body = [ "nonce" := nonce ] <> body' 
-            --body' = mconcat (fmap (\(x,y) -> [Byte.pack x := Byte.pack y]) optPost)
             body' = unzipWith (:=) $ fmap (first Byte.pack) optPost
         let url = intercalate "/" [ "https://api.kraken.com/0"
                                   , optApiType
@@ -58,7 +57,7 @@ post opts@Opts{..} = do
         res <- postWith opts' url body
         print $ res ^. responseBody
         let err = res ^. responseBody . key "error" . _String
-        let p = res ^? responseBody . key "result" . members 
+        let p = res ^? responseBody . key "result" 
         case p of
           Just p' -> case fromJSON p' of
                           Success s -> return $ Right s

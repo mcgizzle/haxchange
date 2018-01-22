@@ -34,3 +34,4 @@ library
                      , cryptohash
                      , cryptohash-sha512
                      , ghc
+                     , unordered-containers
