@@ -12,10 +12,10 @@ defaultOpts = Opts mempty mempty "public" mempty mempty mempty
 getKeys :: IO [String]
 getKeys = lines <$> readFile "keys.txt"
 
-getTicker :: String -> IO (Either String Ticker)
+getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runGetApi defaultOpts 
         { optPath = "Ticker"
-        , optParams = [(Text.pack "pair",Text.pack $ delete '-' mrkt)] }
+        , optParams = [(Text.pack "pair",Text.pack $ show mrkt)] }
 
 getBalance :: IO (Either String Balance)
 getBalance = withKeys $ \ pubKey privKey -> 
@@ -25,11 +25,14 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-placeBuyLimit :: Price -> Volume -> IO (Either String Order)
-placeBuyLimit p v = withKeys $ \ pubKey privKey ->
+placeBuyLimit :: String -> Price -> Volume -> IO (Either String Order)
+placeBuyLimit m p v = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
-                , optPost = [ ("type","buy")
+                , optApiType = "private"
+                , optPost = [ ("pair", show m)
+                            , ("type","buy")
+                            , ("ordertype","market")
                             , ("price",p)
                             , ("volume",v)
                             , ("validate","true") ] }

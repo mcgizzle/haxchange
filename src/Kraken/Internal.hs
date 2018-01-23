@@ -54,7 +54,7 @@ handleRes :: (Show a, FromJSON b, AsValue a) => Response a -> IO (Either String 
 handleRes res = do
         print $ res ^. responseBody
         let err = res ^. responseBody . key "error" . _String
-        let p = res ^? responseBody . key "result" 
+        let p = res ^? responseBody . key "result" . members 
         case p of
           Just p' -> case fromJSON p' of
                           Success s -> return $ Right s
