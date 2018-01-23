@@ -16,6 +16,10 @@ import Text.Read
 import Network.Wreq (FormParam)
 
 
+type Price = String
+type Volume = String
+type Order = String
+
 type Params = [(Text,Text)]
 
 data Opts = Opts {
