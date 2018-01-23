@@ -14,7 +14,7 @@ extra-source-files:  README.md
 library 
   exposed-modules:     Bittrex.Api
                      , Kraken.Api
-  other-modules:       Types
+  other-modules:       Types, Utils
                      , Bittrex.Internal, Bittrex.Types
                      , Kraken.Internal, Kraken.Types
   hs-source-dirs:      src
