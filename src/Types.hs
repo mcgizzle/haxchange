@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Types where
 
 import Data.Aeson
@@ -9,26 +9,19 @@ import Text.Read (readMaybe)
 import GHC.Generics
 
 data Currency = EUR
-              | XBT
+              | BTC
               | XRP
               | ETH
               | LTC
-        deriving(Show,Read) 
+              | UNKNOWN Text
+        deriving(Show,Eq,Read,Generic) 
+
+instance FromJSON Currency
+
+data MarketName = MarketName Currency Currency
+        deriving (Eq,Read)
 
 newtype Balance = Balance [(Currency,Float)]
-        deriving(Show,Generic)
-
-data MarketName = MarketName MarketName' | NewMarket Text
-        deriving (Eq,Show,Read)
-
-instance FromJSON MarketName where
-        parseJSON = withText "MarketName" $ \ t ->
-                case readMaybe $ Text.unpack $ Text.replace "-" "_" t of
-                  Nothing -> pure $ NewMarket t
-                  Just m  -> pure $ MarketName m
-
-data MarketName' = BTC_ETH
-        deriving (Eq,Show,Read)
 
 data Ticker = Ticker {
                        bid :: Float
