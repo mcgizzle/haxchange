@@ -1,10 +1,12 @@
 {-# LANGUAGE DeriveGeneric,DeriveFunctor,OverloadedStrings #-}
 module Types where
 
+import Prelude as P
 import Data.Aeson
-import Data.Monoid ((<>))
+import Data.Monoid ((<>),mconcat)
 import Data.Map as Map
 import Data.Text (Text)
+import Data.List.Split (splitOn)
 import qualified Data.Text as Text
 import Text.Read (readMaybe)
 import GHC.Generics
@@ -29,12 +31,13 @@ instance Api Currency where
         fromText a     = NA a 
 
 
-data Currency' = EUR 
-              | BTC 
-              | XRP 
-              | ETH
-              | LTC
-              | UNKNOWN Text
+data Currency' = 
+        EUR 
+      | BTC 
+      | XRP 
+      | ETH
+      | LTC
+      | Text
         deriving(Show,Eq,Read,Generic) 
 
 instance FromJSON Currency'
@@ -45,13 +48,23 @@ instance Api Currency' where
         toText XRP = "XRP"
         toText ETH = "ETH"
         toText LTC = "LTC"
-        toText (UNKNOWN t) = t
+
+        fromText "EUR" = EUR
+        fromText "BTC" = BTC
+        fromText "XBT" = BTC
+        fromText "XRP" = XRP
+        fromText "ETH" = ETH
+        fromText "LTC" = LTC
+
 
 data MarketName = MarketName Currency Currency
         deriving (Show,Eq,Read)
 
 instance Api MarketName where
         toText (MarketName a b) = toText a <> "-" <> toText b
+
+        fromText a = MarketName (fromText $ head s) (fromText $ P.last s) 
+                where s = Text.splitOn "-" a
 
 newtype Balance = Balance [(Currency,Float)]
         deriving(Show)
@@ -66,7 +79,6 @@ data Ticker = Ticker {
 data Order = 
         Order {
                 market :: MarketName
-              , volume :: Text  
               , price  :: Text
               , volume :: Text
               }

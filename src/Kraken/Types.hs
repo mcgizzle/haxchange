@@ -28,7 +28,6 @@ import GHC.Generics
 
 class Kraken a where
         toText :: a -> Text
-        fromText :: Text -> a
         toAsset :: a -> Text
 
 type Price = Text
@@ -53,20 +52,15 @@ data Opts = Opts {
 instance Kraken MarketName where
         toText (MarketName a b) = toText a <> toText b 
 
-        fromText = T.fromText
+        toAsset (MarketName a b) = toAsset a <> toAsset b
 
 instance Kraken Currency where
         toText (COIN BTC) = "XBT"
         toText a          = T.toText a
 
-        fromText "XBT" = COIN BTC
-        fromText a     = T.fromText a
-
         toAsset (COIN a) = "X" <> toText (COIN a)
         toAsset (FIAT a) = "Z" <> toText (FIAT a)
 
-toPair :: MarketName -> Text
-toPair (MarketName a b) = toAsset a <> toAsset b
 
 instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
@@ -81,7 +75,7 @@ instance FromJSON Balance where
                 where 
                         toBal :: (Text,Value) -> (Currency,Float)
                         toBal (cur,val) = (cur',val')
-                                where cur' = fromText $ Text.tail cur
+                                where cur' = T.fromText $ Text.tail cur
                                       val' = case fromJSON val of
                                                Error _ -> 0.00
                                                Success v -> read v 

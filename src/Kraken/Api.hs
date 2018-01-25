@@ -43,7 +43,7 @@ placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
                 , optApiType = "private"
-                , optPost = [ ("pair", toPair market)
+                , optPost = [ ("pair", toAsset market)
                             , ("type",t)
                             , ("ordertype","limit")
                             , ("price",price)

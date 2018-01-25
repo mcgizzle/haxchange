@@ -41,9 +41,11 @@ class Bittrex a where
 
 instance Bittrex MarketName where
         toText = T.toText
+        fromText = T.fromText
 
 instance Bittrex Currency where
         fromText = T.fromText
+        toText = T.toText
 
 instance FromJSON MarketName where
         parseJSON = withText "MarketName" $ \t -> do
