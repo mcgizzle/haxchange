@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Bittrex.Api where
 
 import Types
@@ -16,4 +17,4 @@ getMarkets = runApi defaultOpts
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runApi defaultOpts 
         { optPath = "getticker"
-        , optParams = [(Text.pack "market",Text.pack $ show mrkt)] }
+        , optParams = [("market",Types.toText mrkt)] }

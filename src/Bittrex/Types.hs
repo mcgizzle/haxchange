@@ -1,11 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE StandaloneDeriving #-}
 module Bittrex.Types where
 
 import Debug.Trace
 
-import Types
+import Types ( Api
+             , Ticker(..)
+             , Currency(..)
+             , Currency'(..)
+             , MarketName(..)
+             , Balance(..) ) 
+import qualified Types as T
 
 import Prelude as P
 import Data.Maybe
@@ -30,17 +35,20 @@ newtype Time = Time UTCTime
 instance FromJSON Time where
         parseJSON = withText "Time" $ \ t -> pure $ Time $ fromJust $ parseISO8601 $ Text.unpack t ++ ['z']
 
-instance Show MarketName where
-        show (MarketName a b) = P.concat [show a,"-",show b] 
+class Bittrex a where
+        toText :: a -> Text
+        fromText :: Text -> a
+
+instance Bittrex MarketName where
+        toText = T.toText
+
+instance Bittrex Currency where
+        fromText = T.fromText
 
 instance FromJSON MarketName where
         parseJSON = withText "MarketName" $ \t -> do
                 let [t1,t2] = Text.splitOn "-" t
-                case readMaybe . Text.unpack <$> [t1,t2] of
-                      [Nothing, Nothing] -> pure $ MarketName (UNKNOWN t1) (UNKNOWN t2)
-                      [Nothing, Just c]  -> pure $ MarketName (UNKNOWN t1) c
-                      [Just c, Nothing]  -> pure $ MarketName c (UNKNOWN t2)
-                      [Just c1, Just c2] -> pure $ MarketName c1 c2
+                pure $ MarketName (fromText t1) (fromText t2)
 
 
 instance FromJSON Ticker where
