@@ -36,7 +36,7 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-placeBuyLimit :: MarketName -> Price -> Text -> IO (Either String Order)
+placeBuyLimit :: MarketName -> Price -> Text -> IO (Either String OrderResponse)
 placeBuyLimit m p v = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
@@ -49,7 +49,8 @@ placeBuyLimit m p v = withKeys $ \ pubKey privKey ->
                             , ("validate","true") 
                             ]
                 , optApiPrivKey = privKey
-                , optApiPubKey = pubKey }
+                , optApiPubKey = pubKey 
+                , optInside = True }
 
 withKeys :: (String -> String -> IO b) -> IO b
 withKeys f = do

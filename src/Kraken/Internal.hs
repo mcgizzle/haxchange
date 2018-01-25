@@ -55,7 +55,7 @@ runPostApi opts@Opts{..} = do
                              & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
                              & header "Accept" .~ ["application/json"] 
         print opts'
-        postWith opts' url body >>= handleRes False
+        postWith opts' url body >>= handleRes optInside
 
 handleRes :: (Show a, FromJSON b, AsValue a) => Bool -> Response a -> IO (Either String b)
 handleRes member res = do

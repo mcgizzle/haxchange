@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, GADTs #-}
+{-# LANGUAGE OverloadedStrings, GADTs, DeriveGeneric #-}
 module Kraken.Types where
 
 import Debug.Trace
@@ -24,6 +24,7 @@ import Data.List (init)
 import Data.HashMap.Lazy as HM
 import Text.Read
 import Network.Wreq (FormParam)
+import GHC.Generics
 
 class Kraken a where
         toText :: a -> Text
@@ -32,7 +33,10 @@ class Kraken a where
 
 type Price = Text
 type Volume = Text
-type Order = String
+newtype OrderResponse = OrderResponse { order :: Text }
+        deriving(Generic,Show)
+
+instance FromJSON OrderResponse 
 
 type Params = [(Text,Text)]
 
