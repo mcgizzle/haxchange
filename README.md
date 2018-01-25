@@ -15,8 +15,8 @@ I hope to extraxt as much functioanlity as possible and I expect a lot of refact
 
 ## Progress
 
-Exchange | getTicker | getBalance | buyLimit | sellLimit |
----|---|---
+Exchange | getTicker | getBalance | buyLimit | sellLimit 
+---|---|---|---|---
 Kraken | Yes | Yes | Yes | Yes
 Bittrex | Yes | No* | No* | No*
 
