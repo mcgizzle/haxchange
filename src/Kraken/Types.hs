@@ -1,12 +1,22 @@
 {-# LANGUAGE OverloadedStrings, GADTs #-}
 module Kraken.Types where
 
-import Types
+import Debug.Trace
+
+import Types ( Api
+             , Ticker(..)
+             , Currency(..)
+             , Currency'(..)
+             , MarketName(..)
+             , Balance(..) ) 
+import qualified Types as T
 
 import Prelude as P
+import Data.Monoid ((<>))
 import Data.Map
 import Data.Maybe
-import Data.Text hiding (read,head,init)
+import Data.Text (Text)
+import qualified Data.Text as Text 
 import Data.Time
 import Data.Time.ISO8601
 import Data.Aeson
@@ -15,8 +25,13 @@ import Data.HashMap.Lazy as HM
 import Text.Read
 import Network.Wreq (FormParam)
 
-type Price = String
-type Volume = String
+class Kraken a where
+        toText :: a -> Text
+        fromText :: Text -> a
+        toAsset :: a -> Text
+
+type Price = Text
+type Volume = Text
 type Order = String
 
 type Params = [(Text,Text)]
@@ -27,18 +42,27 @@ data Opts = Opts {
                  , optApiType    :: String
                  , optApiPubKey  :: String
                  , optApiPrivKey :: String
-                 , optPost       :: [(String,String)]
+                 , optPost       :: Params 
+                 , optInside     :: Bool
                  }
 
-class (KrakenShow a) where
-        kShow :: a -> String
+instance Kraken MarketName where
+        toText (MarketName a b) = toText a <> toText b 
 
-instance KrakenShow Currency where
-        kShow BTC = "XBT"
-        kShow a   = show a
+        fromText = T.fromText
 
-instance Show MarketName where
-        show (MarketName a b) = kShow a ++ kShow b
+instance Kraken Currency where
+        toText (COIN BTC) = "XBT"
+        toText a          = T.toText a
+
+        fromText "XBT" = COIN BTC
+        fromText a     = T.fromText a
+
+        toAsset (COIN a) = "X" <> toText (COIN a)
+        toAsset (FIAT a) = "Z" <> toText (FIAT a)
+
+toPair :: MarketName -> Text
+toPair (MarketName a b) = toAsset a <> toAsset b
 
 instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
@@ -50,11 +74,10 @@ instance FromJSON Ticker where
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \o -> pure $ Balance $ toBal <$> HM.toList o
-                
-toBal :: (Text,Value) -> (Currency,Float)
-toBal (cur,val) = (cur',val')
-        where cur' = read $ P.tail $ unpack cur
-              val' = fromResult $ fromJSON val 
-              fromResult r = case r of
-                               Error _ -> 0.00
-                               Success v -> read v
+                where 
+                        toBal :: (Text,Value) -> (Currency,Float)
+                        toBal (cur,val) = (cur',val')
+                                where cur' = fromText $ Text.tail cur
+                                      val' = case fromJSON val of
+                                               Error _ -> 0.00
+                                               Success v -> read v 

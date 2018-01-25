@@ -1,13 +1,22 @@
+{-# LANGUAGE OverloadedStrings#-}
 module Kraken.Api where
 
-import Types
+import Types ( Api
+             , Ticker(..)
+             , Currency(..)
+             , Currency'(..)
+             , MarketName(..)
+             , Balance(..) ) 
+import qualified Types as T
+
 import Kraken.Types
 import Kraken.Internal
+import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.List
 import Data.Monoid
 
-defaultOpts = Opts mempty mempty "public" mempty mempty mempty 
+defaultOpts = Opts mempty mempty "public" mempty mempty mempty False
 
 getKeys :: IO [String]
 getKeys = lines <$> readFile "keys.txt"
@@ -15,27 +24,32 @@ getKeys = lines <$> readFile "keys.txt"
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runGetApi defaultOpts 
         { optPath = "Ticker"
-        , optParams = [(Text.pack "pair",Text.pack $ show mrkt)] }
+        , optParams = [("pair",toText mrkt)] 
+        , optInside = True 
+        }
 
 getBalance :: IO (Either String Balance)
 getBalance = withKeys $ \ pubKey privKey -> 
-        runGetApi defaultOpts 
+        runPostApi defaultOpts 
                 { optPath = "Balance"
                 , optApiType = "private"
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-placeBuyLimit :: String -> Price -> Volume -> IO (Either String Order)
+placeBuyLimit :: MarketName -> Price -> Text -> IO (Either String Order)
 placeBuyLimit m p v = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
                 , optApiType = "private"
-                , optPost = [ ("pair", show m)
+                , optPost = [ ("pair", toPair m)
                             , ("type","buy")
-                            , ("ordertype","market")
+                            , ("ordertype","limit")
                             , ("price",p)
                             , ("volume",v)
-                            , ("validate","true") ] }
+                            , ("validate","true") 
+                            ]
+                , optApiPrivKey = privKey
+                , optApiPubKey = pubKey }
 
 withKeys :: (String -> String -> IO b) -> IO b
 withKeys f = do
