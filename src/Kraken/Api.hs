@@ -1,12 +1,14 @@
-{-# LANGUAGE OverloadedStrings#-}
+{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 module Kraken.Api where
 
-import Types ( Api
-             , Ticker(..)
-             , Currency(..)
-             , Currency'(..)
-             , MarketName(..)
-             , Balance(..) ) 
+import Types 
+        ( Api
+        , Ticker(..)
+        , Currency(..)
+        , Currency'(..)
+        , MarketName(..)
+        , Balance(..) 
+        , Order(..)) 
 import qualified Types as T
 
 import Kraken.Types
@@ -36,21 +38,27 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-placeBuyLimit :: MarketName -> Price -> Text -> IO (Either String OrderResponse)
-placeBuyLimit m p v = withKeys $ \ pubKey privKey ->
+placeOrder :: Text -> Order -> IO (Either String OrderResponse)
+placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
                 , optApiType = "private"
-                , optPost = [ ("pair", toPair m)
-                            , ("type","buy")
+                , optPost = [ ("pair", toPair market)
+                            , ("type",t)
                             , ("ordertype","limit")
-                            , ("price",p)
-                            , ("volume",v)
+                            , ("price",price)
+                            , ("volume",volume)
                             , ("validate","true") 
                             ]
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey 
                 , optInside = True }
+
+buyLimit :: Order -> IO (Either String OrderResponse)
+buyLimit = placeOrder "buy" 
+
+sellLimit :: Order -> IO (Either String OrderResponse)
+sellLimit = placeOrder "sell" 
 
 withKeys :: (String -> String -> IO b) -> IO b
 withKeys f = do

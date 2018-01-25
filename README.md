@@ -14,9 +14,10 @@ Each exchange requires its own functions to call the Api, but they follow a simi
 I hope to extraxt as much functioanlity as possible and I expect a lot of refactoring as they project progresses.
 
 ## Progress
-Exchange | getTicker | getBalance 
+
+Exchange | getTicker | getBalance | buyLimit | sellLimit |
 ---|---|---
-Kraken | Yes | Yes
-Bittrex | Yes | No*
+Kraken | Yes | Yes | Yes | Yes
+Bittrex | Yes | No* | No* | No*
 
 *New accounts are currently blocked 

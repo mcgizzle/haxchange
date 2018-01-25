@@ -62,3 +62,11 @@ data Ticker = Ticker {
                      , last :: Float
                      }
                deriving (Eq,Show)
+
+data Order = 
+        Order {
+                market :: MarketName
+              , volume :: Text  
+              , price  :: Text
+              , volume :: Text
+              }
