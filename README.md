@@ -6,12 +6,33 @@ The goal of this project is to create a uniform E-DSL for various cryptocurrency
 Contributions are welcomed with open arms :)
 
 ## Implementation
-There is a shared *Types.hs* file. This file contains ADT's that will be uniform accross all exchanges.
-Each of the exchanges contains a custom `ToJSON` instance in order to wrangle the data into these ADT's. 
+There is a shared **Types** file. This file contains ADT's that are uniform accross all exchanges.
 
-Each exchange requires its own functions to call the Api, but they follow a similar pattern.
+In order to improve effeciency, the data types are mostly [Text]().
 
-I hope to extraxt as much functioanlity as possible and I expect a lot of refactoring as they project progresses.
+There is an *Api* type class which has the following functions
+```Haskell
+class Api where
+  toText :: a -> Text
+  fromText :: Text -> a
+```
+
+Each exchange then implements its own type class
+```Haskell
+class <Exchange> where
+  toText :: a -> Text
+```
+This helps with wrangling data into the unified model and vice-versa. The `toText` function is used to override the general version for special cases. 
+
+Implementations of the exchanges will often follow the following pattern:
+```Haskell
+import qualified Types as T
+class Kraken where
+  toText (COIN BTC) = "XBT"
+  toText            = T.toText
+  
+```
+Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
 
 ## Progress
 
