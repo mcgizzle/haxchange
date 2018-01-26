@@ -66,8 +66,8 @@ instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
                 bid <- o .: "b"
                 ask <- o .: "a"
-                last <- o .: "c"
-                pure $ Ticker (t bid) (t ask) (t last) 
+                volume <- o .: "v"
+                pure $ Ticker (t bid) (t ask) (Just $ t volume) 
                         where t = read . head
 
 instance FromJSON Balance where

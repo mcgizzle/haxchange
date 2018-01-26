@@ -15,8 +15,11 @@ class Api a where
         fromText :: Text -> a
         toText :: a -> Text
 
-data Currency = FIAT Currency' | COIN Currency' | NA Text
-        deriving(Eq,Show,Read)
+data Currency = 
+        FIAT Currency' 
+      | COIN Currency' 
+      | NA Text
+ deriving(Eq,Show,Read)
 
 instance Api Currency where
         toText (FIAT a) = toText a
@@ -69,16 +72,17 @@ instance Api MarketName where
 newtype Balance = Balance [(Currency,Float)]
         deriving(Show)
 
-data Ticker = Ticker {
-                       bid :: Float
-                     , ask :: Float
-                     , last :: Float
-                     }
-               deriving (Eq,Show)
+data Ticker = 
+        Ticker {
+                 tickerBid    :: Float
+               , tickerAsk    :: Float
+               , tickerVolume :: Maybe Float
+               }
+         deriving (Eq,Show) 
 
 data Order = 
         Order {
-                market :: MarketName
-              , price  :: Text
-              , volume :: Text
+                orderMarket :: MarketName
+              , orderPrice  :: Text
+              , orderVolume :: Text
               }

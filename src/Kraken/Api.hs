@@ -20,8 +20,6 @@ import Data.Monoid
 
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty False
 
-getKeys :: IO [String]
-getKeys = lines <$> readFile "keys.txt"
 
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runGetApi defaultOpts 
@@ -43,11 +41,11 @@ placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts 
                 { optPath = "AddOrder"
                 , optApiType = "private"
-                , optPost = [ ("pair", toAsset market)
+                , optPost = [ ("pair", toAsset orderMarket)
                             , ("type",t)
                             , ("ordertype","limit")
-                            , ("price",price)
-                            , ("volume",volume)
+                            , ("price",orderPrice)
+                            , ("volume",orderVolume)
                             , ("validate","true") 
                             ]
                 , optApiPrivKey = privKey
@@ -60,6 +58,9 @@ buyLimit = placeOrder "buy"
 sellLimit :: Order -> IO (Either String OrderResponse)
 sellLimit = placeOrder "sell" 
 
+--------------- KEYS ----------------------------------------------
+getKeys :: IO [String]
+getKeys = lines <$> readFile "keys/kraken.txt"
 withKeys :: (String -> String -> IO b) -> IO b
 withKeys f = do
         [pubKey,privKey] <- getKeys
