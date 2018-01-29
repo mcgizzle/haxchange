@@ -17,9 +17,10 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.List
 import Data.Monoid
+import Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as B8
 
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty False
-
 
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runGetApi defaultOpts 
@@ -59,9 +60,9 @@ sellLimit :: Order -> IO (Either String OrderResponse)
 sellLimit = placeOrder "sell" 
 
 --------------- KEYS ----------------------------------------------
-getKeys :: IO [String]
-getKeys = lines <$> readFile "keys/kraken.txt"
-withKeys :: (String -> String -> IO b) -> IO b
+getKeys :: IO [ByteString]
+getKeys = B8.lines <$> B8.readFile "keys/kraken.txt"
+withKeys :: (ByteString -> ByteString -> IO b) -> IO b
 withKeys f = do
         [pubKey,privKey] <- getKeys
         f pubKey privKey

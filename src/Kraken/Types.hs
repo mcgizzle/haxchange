@@ -22,6 +22,7 @@ import Data.Time.ISO8601
 import Data.Aeson
 import Data.List (init)
 import Data.HashMap.Lazy as HM
+import Data.ByteString (ByteString)
 import Text.Read
 import Network.Wreq (FormParam)
 import GHC.Generics
@@ -43,8 +44,8 @@ data Opts = Opts {
                    optPath       :: String
                  , optParams     :: Params 
                  , optApiType    :: String
-                 , optApiPubKey  :: String
-                 , optApiPrivKey :: String
+                 , optApiPubKey  :: ByteString
+                 , optApiPrivKey :: ByteString
                  , optPost       :: Params 
                  , optInside     :: Bool
                  }
