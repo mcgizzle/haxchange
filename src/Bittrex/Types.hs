@@ -15,8 +15,7 @@ import qualified Types as T
 import Prelude as P
 import Data.Maybe
 import Data.Text as Text
-import Data.Time
-import Data.Time.ISO8601
+import Data.Monoid ((<>))
 import Data.Aeson
 import Data.List.Split (splitOn)
 import Text.Read
@@ -33,7 +32,7 @@ class Bittrex a where
         toText :: a -> Text
 
 instance Bittrex MarketName where
-        toText = T.toText
+        toText (MarketName a b) = toText a <> "-" <> toText b
 
 instance Bittrex Currency where
         toText = T.toText

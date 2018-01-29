@@ -51,7 +51,7 @@ data Opts = Opts {
                  }
 
 instance Kraken MarketName where
-        toText (MarketName a b) = toText a <> toText b 
+        toText = T.toText
 
         toAsset (MarketName a b) = toAsset a <> toAsset b
 

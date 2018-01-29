@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric,DeriveFunctor,OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric,OverloadedStrings #-}
 module Types where
 
 import Prelude as P
@@ -8,6 +8,7 @@ import Data.Map as Map
 import Data.Text (Text)
 import Data.List.Split (splitOn)
 import qualified Data.Text as Text
+import Data.Monoid ((<>))
 import Text.Read (readMaybe)
 import GHC.Generics
 
@@ -19,7 +20,7 @@ data Currency =
         FIAT Currency' 
       | COIN Currency' 
       | NA Text
- deriving(Eq,Show,Read)
+ deriving(Eq,Show,Read,Generic)
 
 instance Api Currency where
         toText (FIAT a) = toText a
@@ -64,13 +65,13 @@ data MarketName = MarketName Currency Currency
         deriving (Show,Eq,Read)
 
 instance Api MarketName where
-        toText (MarketName a b) = toText a <> "-" <> toText b
+        toText (MarketName a b) = toText a <> toText b
 
         fromText a = MarketName (fromText $ head s) (fromText $ P.last s) 
                 where s = Text.splitOn "-" a
 
 newtype Balance = Balance [(Currency,Float)]
-        deriving(Show)
+        deriving(Show,Generic)
 
 data Ticker = 
         Ticker {
@@ -78,7 +79,7 @@ data Ticker =
                , tickerAsk    :: Float
                , tickerVolume :: Maybe Float
                }
-         deriving (Eq,Show) 
+         deriving (Eq,Show,Generic) 
 
 data Order = 
         Order {
@@ -86,3 +87,4 @@ data Order =
               , orderPrice  :: Text
               , orderVolume :: Text
               }
+        deriving(Eq,Show,Generic)
