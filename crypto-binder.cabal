@@ -12,10 +12,11 @@ cabal-version:       >=1.10
 extra-source-files:  README.md
 
 library 
-  exposed-modules:     Bittrex.Api
+  exposed-modules:     Types
+                     , Bittrex.Api
                      , Kraken.Api
                      , Binance.Api
-  other-modules:       Types, Utils
+  other-modules:       Utils
                      , Bittrex.Internal, Bittrex.Types
                      , Kraken.Internal, Kraken.Types
                      , Binance.Internal, Binance.Types
@@ -39,3 +40,14 @@ library
                      , cryptohash-sha512
                      , ghc
                      , unordered-containers
+
+test-suite spec
+  type:                exitcode-stdio-1.0
+  main-is:             Spec.hs
+  hs-source-dirs:      test
+  build-depends:       base >= 4.7 && < 5
+                     , crypto-binder
+                     , hspec
+                     , hspec-expectations
+  other-modules:       Kraken.ApiSpec
+
