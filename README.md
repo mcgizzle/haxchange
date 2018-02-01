@@ -3,12 +3,17 @@
 ## About
 The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
+## Templates
+
+There is a template folder which contains the three modules necessary for adding a new exchange, along with most of the bolier plate. To contribute simple copy that folder and rename all tags
+`<newmodule>` to `<exchange-name>`
+
 Contributions are welcomed with open arms :)
 
 ## Implementation
-There is a shared **Types** file. This file contains ADT's that are uniform accross all exchanges.
+There are shared ADT's that are uniform accross all exchanges. Each exchange implements custom `FromJSON` instances as appropriate.
 
-In order to improve effeciency, the data types are mostly [Text]().
+In order to improve effeciency, the data types are mostly [Text](http://sorryiwillinsertalinkatsomestage.com).
 
 There is an *Api* type class which has the following functions
 ```Haskell
@@ -29,16 +34,18 @@ Implementations of the exchanges will often follow the following pattern:
 import qualified Types as T
 class Kraken where
   toText (COIN BTC) = "XBT"
-  toText            = T.toText
+  toText a          = T.toText a
   
 ```
 Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
+
 
 ## Progress
 
 Exchange | getTicker | getBalance | buyLimit | sellLimit 
 ---|---|---|---|---
-Kraken | Yes | Yes | Yes | Yes
-Bittrex | Yes | No* | No* | No*
+Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+Binance | :heavy_check_mark: | :x: | :x: | :x:
+Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
 
 *New accounts are currently blocked 
