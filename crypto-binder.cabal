@@ -36,8 +36,10 @@ library
                      , split
                      , bytestring
                      , base64-bytestring
+                     , base16-bytestring
                      , cryptohash-sha512
                      , cryptohash-sha256
+                     , hex
                      , ghc
                      , unordered-containers
 
