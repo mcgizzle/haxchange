@@ -49,8 +49,7 @@ runGetApi opts@Opts{..} b = do
 runPostApi :: FromJSON r => Opts -> Bool -> IO (Either String r)
 runPostApi opts@Opts{..} b = do
         nonce <- getNonce
-        let body = [ "nonce" := nonce ] <> body' 
-            body' = unzipWith (:=) $ first encodeUtf8 <$> optPost
+        let body = [ "nonce" := nonce ] <> toFormParam optPost 
             url = getUrl opts id
             apisign = B64.encode $ SHA512.hmac b64Api (uri <> nonceAndPost)
             uri = Byte.pack $ getUri opts
