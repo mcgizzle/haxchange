@@ -3,12 +3,14 @@ module Kraken.Types where
 
 import Debug.Trace
 
-import Types ( Api
-             , Ticker(..)
-             , Currency(..)
-             , Currency'(..)
-             , MarketName(..)
-             , Balance(..) ) 
+import Types 
+  ( Api
+  , Ticker(..)
+  , Currency(..)
+  , Currency'(..)
+  , MarketName(..)
+  , Balance(..) 
+  , Opts(..) )  
 import qualified Types as T
 
 import Prelude as P
@@ -31,24 +33,10 @@ class Kraken a where
         toText :: a -> Text
         toAsset :: a -> Text
 
-type Price = Text
-type Volume = Text
 newtype OrderResponse = OrderResponse { order :: Text }
         deriving(Generic,Show)
 
 instance FromJSON OrderResponse 
-
-type Params = [(Text,Text)]
-
-data Opts = Opts {
-                   optPath       :: String
-                 , optParams     :: Params 
-                 , optApiType    :: String
-                 , optApiPubKey  :: ByteString
-                 , optApiPrivKey :: ByteString
-                 , optPost       :: Params 
-                 , optInside     :: Bool
-                 }
 
 instance Kraken MarketName where
         toText = T.toText

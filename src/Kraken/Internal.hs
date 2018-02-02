@@ -5,6 +5,7 @@ module Kraken.Internal where
 
 import Debug.Trace
 --------------------------------------------------------------------------------------------------
+import Types (Opts(..))
 import Utils
 import Kraken.Types
 --------------------------------------------------------------------------------------------------
@@ -23,7 +24,7 @@ import           Data.List.Split (splitOn)
 import           Data.Maybe (fromJust)
 import qualified Data.ByteString.Char8 as Byte
 import           Data.ByteString.Base64 as B64
-import "cryptohash-sha512" Crypto.Hash.SHA512 (hmac)
+import           Crypto.Hash.SHA512 as SHA512 
 import           Crypto.Hash.SHA256 as SHA256
 ----------------------------------------------------------------------------------------------------
 
@@ -38,20 +39,20 @@ getUri opts = getUrl opts (\ (x:xs) -> "":xs)
 
 ----------------------------------------------------------------------------------------------------
 
-runGetApi :: FromJSON r => Opts -> IO (Either String r)
-runGetApi opts@Opts{..} = do
+runGetApi :: FromJSON r => Opts -> Bool -> IO (Either String r)
+runGetApi opts@Opts{..} b = do
         let opts' = defaults & header "Accept" .~ ["application/json"] 
                              & params .~  optParams
             url = getUrl opts id
-        getWith opts' url >>= handleRes optInside
+        getWith opts' url >>= handleRes b
 
-runPostApi :: FromJSON r => Opts -> IO (Either String r)
-runPostApi opts@Opts{..} = do
+runPostApi :: FromJSON r => Opts -> Bool -> IO (Either String r)
+runPostApi opts@Opts{..} b = do
         nonce <- getNonce
         let body = [ "nonce" := nonce ] <> body' 
             body' = unzipWith (:=) $ first encodeUtf8 <$> optPost
             url = getUrl opts id
-            apisign = B64.encode $ hmac b64Api (uri <> nonceAndPost)
+            apisign = B64.encode $ SHA512.hmac b64Api (uri <> nonceAndPost)
             uri = Byte.pack $ getUri opts
             nonceAndPost = SHA256.hash $ Byte.pack nonce <> Byte.pack ("nonce="++nonce) 
             Right b64Api = B64.decode optApiPrivKey
@@ -59,7 +60,7 @@ runPostApi opts@Opts{..} = do
                              & header "API-Sign" .~ [apisign]
                              & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
                              & header "Accept" .~ ["application/json"] 
-        postWith opts' url body >>= handleRes optInside
+        postWith opts' url body >>= handleRes b
 
 handleRes :: (Show a, FromJSON b, AsValue a) => Bool -> Response a -> IO (Either String b)
 handleRes member res = do

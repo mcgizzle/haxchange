@@ -8,7 +8,8 @@ import Types
         , Currency'(..)
         , MarketName(..)
         , Balance(..) 
-        , Order(..)) 
+        , Order(..)
+        , Opts(..))
 import qualified Types as T
 
 import Kraken.Types
@@ -20,14 +21,13 @@ import Data.Monoid
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B8
 
-defaultOpts = Opts mempty mempty "public" mempty mempty mempty False
+defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty 
 
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = runGetApi defaultOpts 
         { optPath = "Ticker"
         , optParams = [("pair",toText mrkt)] 
-        , optInside = True 
-        }
+        } True
 
 getBalance :: IO (Either String Balance)
 getBalance = withKeys $ \ pubKey privKey -> 
@@ -35,7 +35,7 @@ getBalance = withKeys $ \ pubKey privKey ->
                 { optPath = "Balance"
                 , optApiType = "private"
                 , optApiPrivKey = privKey
-                , optApiPubKey = pubKey }
+                , optApiPubKey = pubKey } False
 
 placeOrder :: Text -> Order -> IO (Either String OrderResponse)
 placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
@@ -50,8 +50,7 @@ placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
                             , ("validate","true") 
                             ]
                 , optApiPrivKey = privKey
-                , optApiPubKey = pubKey 
-                , optInside = True }
+                , optApiPubKey = pubKey } True
 
 buyLimit :: Order -> IO (Either String OrderResponse)
 buyLimit = placeOrder "buy" 

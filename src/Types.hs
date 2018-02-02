@@ -1,16 +1,32 @@
 {-# LANGUAGE DeriveGeneric,OverloadedStrings #-}
 module Types where
 
-import Prelude as P
-import Data.Aeson
-import Data.Monoid ((<>),mconcat)
-import Data.Map as Map
-import Data.Text (Text)
-import Data.List.Split (splitOn)
+import           Prelude as P
+import           Data.Aeson
+import           Data.Monoid ((<>),mconcat)
+import           Data.Map as Map
+import           Data.Text (Text)
+import           Data.List.Split (splitOn)
+import           Data.ByteString (ByteString)
 import qualified Data.Text as Text
-import Data.Monoid ((<>))
-import Text.Read (readMaybe)
-import GHC.Generics
+import           Text.Read (readMaybe)
+import           GHC.Generics
+
+-------------------------------------
+type Params = [(Text,Text)]
+
+data Opts = 
+        Opts {
+               optPath       :: String
+             , optParams     :: Params 
+             , optApiType    :: String
+             , optApiVersion :: String
+             , optApiPubKey  :: ByteString
+             , optApiPrivKey :: ByteString
+             , optPost       :: Params 
+             }
+
+-------------------------------------
 
 class Api a where
         fromText :: Text -> a
