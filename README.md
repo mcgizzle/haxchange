@@ -5,8 +5,10 @@ The goal of this project is to create a uniform E-DSL for various cryptocurrency
 
 ## Templates
 
-There is a template folder which contains the three modules necessary for adding a new exchange, along with most of the bolier plate. To contribute simple copy that folder and rename all tags
+There is a template folder which contains the modules and tests necessary for adding a new exchange, along with most of the bolier plate. To contribute simple copy that folder and rename all tags.
 `<newmodule>` to `<exchange-name>`
+
+Development should be done in test-driven manner. 
 
 Contributions are welcomed with open arms :)
 
