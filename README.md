@@ -42,10 +42,10 @@ Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
 
 ## Progress
 
-Exchange | getTicker | getBalance | buyLimit | sellLimit 
+iExchange | getTicker | getBalance | buyLimit | sellLimit 
 ---|---|---|---|---
 Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-Binance | :heavy_check_mark: | :x: | :x: | :x:
+Binance | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:
 Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
 
 *New accounts are currently blocked 

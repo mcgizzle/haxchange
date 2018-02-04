@@ -17,9 +17,12 @@ import           Data.Text (Text)
 import qualified Data.Text as Text 
 import           Data.Monoid ((<>))
 import           Data.Aeson
+import           Data.Aeson.Types (Parser(..),Array)
 import           Data.ByteString (ByteString)
-import           Network.Wreq (FormParam)
 import           GHC.Generics
+import qualified Data.HashMap.Lazy as HM
+import qualified Data.Vector as V
+
 
 class Binance a where
         toText :: a -> Text
@@ -40,9 +43,14 @@ instance FromJSON Ticker where
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \ o -> do
                 bal <- o .: "balances" 
-                curs <- bal .: "asset"
-                amounts <- bal .: "free"
-                pure $ Balance $ zip curs (read amounts)
+                Balance . filter (\(_,y) -> y /= 0) <$> mapM toBal (V.toList bal)
+                        where 
+                                toBal :: Value -> Parser (Currency,Float)
+                                toBal = withObject "O" $ \ o -> do
+                                        cur <- o .: "asset"
+                                        amount <- o .: "free"
+                                        pure (T.fromText cur,read amount)
+
 
 instance FromJSON Currency
 
