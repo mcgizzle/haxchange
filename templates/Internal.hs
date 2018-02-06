@@ -1,65 +1,68 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE PackageImports #-}
 module <newmodule>.Internal where
 
 import Debug.Trace
 
 import Utils
+import Types (Opts(..))
 import <newmodule>.Types
 
-import Util
-import Control.Arrow (first,(***))
-import Network.Wreq
-import Control.Lens 
-import Data.Aeson.Lens 
-import Data.Aeson
-import Data.Monoid
-import Data.Text (Text)
+import           Network.Wreq
+import           Network.HTTP.Client (HttpException)
+import           Control.Lens 
+import           Control.Exception as E
+import           Data.Aeson.Lens 
+import           Data.Aeson
+import           Data.Monoid ((<>))
 import qualified Data.Text as Text
-import Data.Text.Encoding (encodeUtf8,decodeUtf8)
-import Data.List (intercalate)
-import Data.List.Split (splitOn)
-import Data.Maybe (fromJust)
-import qualified Data.ByteString.Char8 as Byte
-import Data.ByteString.Base64 as B64
-import "cryptohash-sha512" Crypto.Hash.SHA512 (hmac)
-import Crypto.Hash.SHA256 as SHA256
+import           Data.Text.Encoding (encodeUtf8,decodeUtf8)
+import           Data.List (intercalate)
+import           Data.ByteString (ByteString)
 
 
+-- HELPER FUNCTIONS ---------------------------------------------------------------------------------------------------
+getUrl :: Opts -> String
+getUrl Opts{..} = intercalate "/" [ ""
+                                  , "api"
+                                  , optApiVersion
+                                  , optPath ]
+
+apiSign :: Opts -> ByteString
+apiSign Opts{..} = undefined
+
+-- HEADERS -------------------------------------------------------------------------------------------------------------
+getDefaults :: Opts -> Network.Wreq.Options
+getDefaults opts@Opts{..} = defaults & header "Accept" .~ ["application/json"] 
+                                     & params .~ optParams 
+
+postDefaults :: Opts -> Network.Wreq.Options
+postDefaults opts@Opts{..} = getDefaults opts & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
+
+-- HTTP CALLS -----------------------------------------------------------------------------------------------------------
 runGetApi :: FromJSON r => Opts -> IO (Either String r)
 runGetApi opts@Opts{..} = do
-        let opts' = defaults & header "Accept" .~ ["application/json"] 
-                             & params .~  trace (show optParams) (optParams)
-            url = intercalate "/" [ <url> 
-                                  , optApiType
-                                  , optPath ]
-        print opts'
-        getWith opts' url >>= handleRes optInside
+        let opts' = getDefaults opts
+            url = getUrl opts
+        (getWith opts' url >>= asValue >>= handleRes) `E.catch` handleExcept
 
 runPostApi :: FromJSON r => Opts -> IO (Either String r)
 runPostApi opts@Opts{..} = do
-        nonce <- getNonce
-        let body = [ "nonce" := nonce ] <> body' 
-            body' = unzipWith (:=) $ first encodeUtf8 <$> optPost
-            url = intercalate "/" [ url 
-                                  , optApiType
-                                  , optPath ]
-            apisign = <apisign> 
-            opts' = defaults & header "API-Key" .~ [Byte.pack optApiPubKey] 
-                             & header "API-Sign" .~ [apisign]
-                             & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
-                             & header "Accept" .~ ["application/json"] 
-        print opts'
-        postWith opts' url body >>= handleRes optInside
+        let opts' = postDefaults opts        
+            url = getUrl opts
+            body = toFormParam optPost
+        (postWith opts' url body >>= asValue >>= handleRes) `E.catch` handleExcept
 
-handleRes :: (Show a, FromJSON b, AsValue a) => Bool -> Response a -> IO (Either String b)
-handleRes member res = do
-        print res
-        let p = res ^. responseBody
-        case p of
-          Just p' -> case fromJSON p' of
-                          Success s -> return $ Right s
-                          Error e -> return $ Left $ "Parse Error: " ++ e
-          Nothing -> return $ Left $ "Network Error: " ++ show err      
+-- HANDLERS ------------------------------------------------------------------------------------------------------------
+handleExcept :: FromJSON r => HttpException -> IO (Either String r)
+handleExcept e = return $ Left $ "Network Exception: " ++ show e
 
+handleRes :: FromJSON b => Response Value -> IO (Either String b)
+handleRes res = do
+        let p = res ^. responseBody 
+        case fromJSON p of
+          Success s -> return $ Right s
+          Error e -> return $ Left $ "Parse Error: " ++ e
+
+
+        
