@@ -1,7 +1,7 @@
 # crypto-binder 🤑
 
 ## About
-iThe goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
+The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
 ## Progress
 
@@ -9,7 +9,7 @@ Exchange | getTicker | getBalance | buyLimit | sellLimit
 ---|---|---|---|---
 Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
-Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
+Bittrex | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication_x:* | :heavy_multiplication_x:*
 
 *New accounts are currently blocked 
 
