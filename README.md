@@ -47,7 +47,7 @@ Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
 iExchange | getTicker | getBalance | buyLimit | sellLimit 
 ---|---|---|---|---
 Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-Binance | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:
-Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
+Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x:
+Bittrex | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication_x:* | :heavy_multiplication_x:*
 
 *New accounts are currently blocked 
