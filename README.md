@@ -1,7 +1,7 @@
 # crypto-binder 🤑
 
 ## About
-iThe goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
+The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
 ## Progress
 
