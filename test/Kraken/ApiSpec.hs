@@ -8,24 +8,31 @@ import Kraken.Api
 
 spec :: Spec
 spec = do
-        let m = MarketName (COIN BTC) (FIAT EUR)
-        let badM = MarketName (COIN BTC) (COIN BTC)
+--        describe "Connectivity" $ do
+--                it "Pings server" $ do
+--                        res <- ping
+--                        res `shouldSatisfy` isRight
         describe "GET" $ do
                 it "Account balance" $ do
                         res <- getBalance
                         res `shouldSatisfy` isRight
-                it "Ticker for BTC/EUR market" $ do
-                        res <- getTicker m
+                it "Ticker for ETH/BTC market" $ do
+                        res <- getTicker market
                         res `shouldSatisfy` isRight
-                it "Ticker for BTC/BTC market" $ do
-                        res <- getTicker badM
-                        res `shouldSatisfy` isLeft
         describe "POST" $ do
                 it "Buy (correct info)" $ do
-                        let o = Order m "100.00" "100.00"
-                        res <- buyLimit o
+                        res <- buyLimit order
                         res `shouldSatisfy` isRight
                 it "Buy (incorrect info)" $ do
-                        let o = Order badM "" ""
-                        res <- buyLimit o
+                        res <- buyLimit badOrder
                         res `shouldSatisfy` isLeft
+                it "Sell (correct info)" $ do
+                        res <- sellLimit order
+                        res `shouldSatisfy` isRight
+                it "Sell (incorrect info)" $ do
+                        res <- sellLimit badOrder
+                        res `shouldSatisfy` isLeft
+       where market    = MarketName (COIN BTC) (FIAT EUR)
+             badMarket = MarketName (COIN BTC) (COIN BTC)
+             order     = Order market "100.00" "100.00"
+             badOrder  = Order badMarket "100.00" "100.00"

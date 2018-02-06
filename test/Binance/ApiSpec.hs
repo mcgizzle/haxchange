@@ -26,6 +26,12 @@ spec = do
                 it "Buy (incorrect info)" $ do
                         res <- buyLimit badOrder
                         res `shouldSatisfy` isLeft
+                it "Sell (correct info)" $ do
+                        res <- sellLimit order
+                        res `shouldSatisfy` isRight
+                it "Sell (incorrect info)" $ do
+                        res <- sellLimit badOrder
+                        res `shouldSatisfy` isLeft
        where market    = MarketName (COIN ETH) (COIN BTC)
              badMarket = MarketName (COIN BTC) (COIN BTC)
              order     = Order market "100.00" "100.00"
