@@ -26,6 +26,7 @@ library
                      , wreq
                      , connection
                      , http-client-tls
+                     , http-client
                      , lens
                      , lens-aeson
                      , aeson

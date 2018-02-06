@@ -57,3 +57,9 @@ instance FromJSON Currency
 newtype ServerTime = SeverTime { serverTime :: Float }
         deriving (Show,Generic)
 instance FromJSON ServerTime
+
+newtype OrderResponse = OrderResponse { orderId :: Int }
+        deriving (Show)
+instance FromJSON OrderResponse where
+        parseJSON = withObject "OrderRes" $ \ o ->do
+                pure $ OrderResponse 1

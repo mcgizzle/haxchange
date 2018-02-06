@@ -3,6 +3,16 @@
 ## About
 The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
+## Progress
+
+Exchange | getTicker | getBalance | buyLimit | sellLimit 
+---|---|---|---|---
+Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
+Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
+
+*New accounts are currently blocked 
+
 ## Templates
 
 There is a template folder which contains the modules and tests necessary for adding a new exchange, along with most of the bolier plate. To contribute simple copy that folder and rename all tags.
@@ -42,12 +52,4 @@ class Kraken where
 Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
 
 
-## Progress
 
-iExchange | getTicker | getBalance | buyLimit | sellLimit 
----|---|---|---|---
-Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-Binance | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:
-Bittrex | :heavy_check_mark: | :x:* | :x:* | :x:*
-
-*New accounts are currently blocked 
