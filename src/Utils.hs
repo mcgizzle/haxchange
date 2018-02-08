@@ -1,17 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Utils where
 
-import Types
+import           Types
 
-import           Data.Monoid ((<>))
-import           Data.ByteString (ByteString)
-import qualified Data.Text as Text
-import           Data.Text.Encoding (encodeUtf8)
-import           Data.List.Split (splitOn)
+import           Control.Arrow         (first)
+import           Data.ByteString       (ByteString)
+import           Data.List.Split       (splitOn)
+import           Data.Monoid           ((<>))
+import qualified Data.Text             as Text
+import           Data.Text.Encoding    (encodeUtf8)
 import           Data.Time.Clock.POSIX (getPOSIXTime)
-import           Control.Arrow (first)
-import           Network.Wreq.Types (FormParam(..))
-import           Util
+import           Network.Wreq.Types    (FormParam (..))
+import           Util                  (unzipWith)
 
 getNonce :: IO String
 getNonce = head . splitOn "." . show <$> getPOSIXTime

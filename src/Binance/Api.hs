@@ -1,29 +1,17 @@
-{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import Utils
-import Types 
-        ( Api
-        , Ticker(..)
-        , Currency(..)
-        , Currency'(..)
-        , MarketName(..)
-        , Balance(..) 
-        , Order(..)
-        , Opts(..)
-        , Params )
-import qualified Types as T
+import           Types                 (Balance (..), MarketName (..),
+                                        Opts (..), Order (..), Ticker (..))
+import           Utils
 
-import           Binance.Types
 import           Binance.Internal
-import           Data.Text (Text)
-import qualified Data.Text as Text
-import           Data.List
-import           Data.Monoid
-import           Data.ByteString (ByteString)
+import           Binance.Types
+import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as B8
-import           Data.Time.Clock.POSIX
-import           Data.Time.Clock
+import           Data.Text             (Text)
+import qualified Data.Text             as Text
 
 defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty
 
@@ -31,7 +19,7 @@ ping :: IO (Either String ServerTime)
 ping = runGetApi defaultOpts { optPath = "time"}
 
 getTicker :: MarketName -> IO (Either String Ticker)
-getTicker mrkt = runGetApi defaultOpts 
+getTicker mrkt = runGetApi defaultOpts
         { optApiVersion = "v3"
         , optPath       = "ticker/bookTicker"
         , optParams     = [("symbol",toText mrkt)]
@@ -39,8 +27,8 @@ getTicker mrkt = runGetApi defaultOpts
 
 getBalance :: IO (Either String Balance)
 getBalance = withKeys $ \ pubKey privKey -> do
-        t <- timeInMilli 
-        runGetPrivApi defaultOpts 
+        t <- timeInMilli
+        runGetPrivApi defaultOpts
                 { optPath = "account"
                 , optApiVersion = "v3"
                 , optApiPubKey = pubKey
@@ -50,8 +38,8 @@ getBalance = withKeys $ \ pubKey privKey -> do
 
 placeOrder :: Text -> Order -> IO (Either String OrderResponse)
 placeOrder side Order{..} = withKeys $ \ pubKey privKey -> do
-        t <- timeInMilli 
-        runPostApi defaultOpts 
+        t <- timeInMilli
+        runPostApi defaultOpts
                     {
                       optPath = "order/test"
                     , optApiVersion = "v3"
@@ -67,10 +55,10 @@ placeOrder side Order{..} = withKeys $ \ pubKey privKey -> do
                     }
 
 buyLimit :: Order -> IO (Either String OrderResponse)
-buyLimit o@Order{..} = placeOrder "buy" o
+buyLimit = placeOrder "buy"
 
 sellLimit :: Order -> IO (Either String OrderResponse)
-sellLimit o@Order{..} = placeOrder "sell" o
+sellLimit = placeOrder "sell"
 
 --------------- KEYS ----------------------------------------------
 getKeys :: IO [ByteString]

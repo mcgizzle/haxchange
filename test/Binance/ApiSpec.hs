@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Binance.ApiSpec where
 
-import Test.Hspec
-import Test.Hspec.Expectations.Contrib
-import Types
-import Binance.Api
+import           Binance.Api
+import           Test.Hspec
+import           Test.Hspec.Expectations.Contrib
+import           Types
 
 spec :: Spec
 spec = do

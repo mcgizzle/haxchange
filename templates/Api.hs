@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
 module <newmodule>.Api where
 
 import Types 
@@ -11,16 +11,15 @@ import Types
         , Order(..)) 
 import qualified Types as T
 
-import <newmodule>.Types
-import <newmodule>.Internal
-import Data.Text (Text)
-import qualified Data.Text as Text
-import Data.List
-import Data.Monoid
+import           <newmodule>.Types
+import           <newmodule>.Internal
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B8
 
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
+
+ping :: IO (Either String String)
+ping = return $ Left "Implement Me!"
 
 getTicker :: MarketName -> IO (Either String Ticker)
 getTicker mrkt = return $ Left "Implement Me!"

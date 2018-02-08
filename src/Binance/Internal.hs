@@ -1,28 +1,24 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards   #-}
 module Binance.Internal where
 
-import Debug.Trace
 
-import Utils
-import Types (Opts(..))
-import Binance.Types
+import           Types                   (Opts (..))
+import           Utils
 
-import           Network.Wreq
-import           Network.Connection  (TLSSettings (..))
-import           Network.HTTP.Client (HttpException)
-import           Network.HTTP.Client.TLS (mkManagerSettings)
-import           Control.Lens 
-import           Control.Exception as E
-import           Data.Aeson.Lens 
+import           Control.Exception       as E
+import           Control.Lens
+import           Crypto.Hash.SHA256      as SHA256
 import           Data.Aeson
-import           Data.Monoid ((<>))
-import qualified Data.Text as Text
-import           Data.Text.Encoding (encodeUtf8,decodeUtf8)
-import           Data.List (intercalate)
-import           Data.ByteString (ByteString)
-import qualified Data.ByteString.Base16 as B16
-import           Crypto.Hash.SHA256 as SHA256
+import           Data.ByteString         (ByteString)
+import qualified Data.ByteString.Base16  as B16
+import           Data.List               (intercalate)
+import           Data.Monoid             ((<>))
+import           Data.Text.Encoding      (decodeUtf8)
+import           Network.Connection      (TLSSettings (..))
+import           Network.HTTP.Client     (HttpException)
+import           Network.HTTP.Client.TLS (mkManagerSettings)
+import           Network.Wreq
 
 
 -- HELPER FUNCTIONS ---------------------------------------------------------------------------------------------------
@@ -38,9 +34,9 @@ apiSign Opts{..} = B16.encode $ SHA256.hmac optApiPrivKey totalParams
 
 -- HEADERS -------------------------------------------------------------------------------------------------------------
 getDefaults :: Opts -> Network.Wreq.Options
-getDefaults opts@Opts{..} = defaults & header "Accept" .~ ["application/json"] 
+getDefaults opts@Opts{..} = defaults & header "Accept" .~ ["application/json"]
                                      & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-                                     & params .~ optParams 
+                                     & params .~ optParams
 
 postDefaults :: Opts -> Network.Wreq.Options
 postDefaults opts@Opts{..} = getDefaults opts & header "X-MBX-APIKEY" .~ [optApiPubKey]
@@ -52,7 +48,7 @@ runGetApi :: FromJSON r => Opts -> IO (Either String r)
 runGetApi = runGetApi' getDefaults
 
 runGetPrivApi :: FromJSON r => Opts -> IO (Either String r)
-runGetPrivApi = runGetApi' postDefaults 
+runGetPrivApi = runGetApi' postDefaults
 
 runGetApi' :: FromJSON r => (Opts -> Network.Wreq.Options) -> Opts -> IO (Either String r)
 runGetApi' fOpts opts@Opts{..} = do
@@ -62,7 +58,7 @@ runGetApi' fOpts opts@Opts{..} = do
 
 runPostApi :: FromJSON r => Opts -> IO (Either String r)
 runPostApi opts@Opts{..} = do
-        let opts' = postDefaults opts        
+        let opts' = postDefaults opts
             url = getUrl opts
             body = toFormParam optPost
         (postWith opts' url body >>= asValue >>= handleRes) `E.catch` handleExcept
@@ -73,10 +69,10 @@ handleExcept e = return $ Left $ "Network Exception: " ++ show e
 
 handleRes :: FromJSON b => Response Value -> IO (Either String b)
 handleRes res = do
-        let p = res ^. responseBody 
+        let p = res ^. responseBody
         case fromJSON p of
           Success s -> return $ Right s
-          Error e -> return $ Left $ "Parse Error: " ++ e
+          Error e   -> return $ Left $ "Parse Error: " ++ e
 
 
-        
+

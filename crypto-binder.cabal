@@ -12,6 +12,7 @@ cabal-version:       >=1.10
 extra-source-files:  README.md
 
 library 
+  ghc-options:         -fwarn-unused-binds -fwarn-unused-imports
   exposed-modules:     Types
                      , Bittrex.Api
                      , Kraken.Api

@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Kraken.ApiSpec where
 
-import Test.Hspec
-import Test.Hspec.Expectations.Contrib
-import Types
-import Kraken.Api
+import           Kraken.Api
+import           Test.Hspec
+import           Test.Hspec.Expectations.Contrib
+import           Types
 
 spec :: Spec
 spec = do

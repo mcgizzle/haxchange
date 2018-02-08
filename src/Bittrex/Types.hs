@@ -1,32 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 module Bittrex.Types where
 
-import Debug.Trace
+import           Types       (Currency (..), MarketName (..), Ticker (..))
+import qualified Types       as T
 
-import Types ( Api
-             , Ticker(..)
-             , Currency(..)
-             , Currency'(..)
-             , MarketName(..)
-             , Balance(..) ) 
-import qualified Types as T
-
-import Prelude as P
-import Data.Maybe
-import Data.Text as Text
-import Data.Monoid ((<>))
-import Data.Aeson
-import Data.List.Split (splitOn)
-import Text.Read
+import           Data.Aeson
+import           Data.Maybe
+import           Data.Monoid ((<>))
+import           Data.Text   as Text
+import           Prelude     as P
 
 type Params = [(Text,Text)]
 
-data Opts = Opts {
-                   optPath    :: String
-                 , optParams  :: Params 
-                 , optApiType :: String
-                 }
+data Opts = Opts
+  {
+    optPath    :: String
+  , optParams  :: Params
+  , optApiType :: String
+  }
 
 class Bittrex a where
         toText :: a -> Text

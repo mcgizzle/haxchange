@@ -1,33 +1,20 @@
-{-# LANGUAGE OverloadedStrings, GADTs, DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Kraken.Types where
 
-import Debug.Trace
+import           Types             (Balance (..), Currency (..), Currency' (..),
+                                    MarketName (..), Ticker (..))
+import qualified Types             as T
 
-import Types 
-  ( Api
-  , Ticker(..)
-  , Currency(..)
-  , Currency'(..)
-  , MarketName(..)
-  , Balance(..) 
-  , Opts(..) )  
-import qualified Types as T
-
-import Prelude as P
-import Data.Monoid ((<>))
-import Data.Map
-import Data.Maybe
-import Data.Text (Text)
-import qualified Data.Text as Text 
-import Data.Time
-import Data.Time.ISO8601
-import Data.Aeson
-import Data.List (init)
-import Data.HashMap.Lazy as HM
-import Data.ByteString (ByteString)
-import Text.Read
-import Network.Wreq (FormParam)
-import GHC.Generics
+import           Data.Aeson
+import           Data.HashMap.Lazy as HM
+import           Data.Maybe
+import           Data.Monoid       ((<>))
+import           Data.Text         (Text)
+import qualified Data.Text         as Text
+import           GHC.Generics
+import           Prelude           as P
 
 class Kraken a where
         toText :: a -> Text
@@ -36,7 +23,7 @@ class Kraken a where
 newtype OrderResponse = OrderResponse { order :: Text }
         deriving(Generic,Show)
 
-instance FromJSON OrderResponse 
+instance FromJSON OrderResponse
 
 instance Kraken MarketName where
         toText = T.toText
@@ -56,15 +43,15 @@ instance FromJSON Ticker where
                 bid <- o .: "b"
                 ask <- o .: "a"
                 volume <- o .: "v"
-                pure $ Ticker (t bid) (t ask) (Just $ t volume) 
+                pure $ Ticker (t bid) (t ask) (Just $ t volume)
                         where t = read . head
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \o -> pure $ Balance $ toBal <$> HM.toList o
-                where 
+                where
                         toBal :: (Text,Value) -> (Currency,Float)
                         toBal (cur,val) = (cur',val')
                                 where cur' = T.fromText $ Text.tail cur
                                       val' = case fromJSON val of
-                                               Error _ -> 0.00
-                                               Success v -> read v 
+                                               Error _   -> 0.00
+                                               Success v -> read v

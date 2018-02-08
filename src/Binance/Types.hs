@@ -1,34 +1,24 @@
-{-# LANGUAGE OverloadedStrings,DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Binance.Types where
 
-import Debug.Trace
+import           Types            (Balance (..), Currency (..), MarketName (..),
+                                   Ticker (..))
+import qualified Types            as T
 
-import Types ( Api
-             , Ticker(..)
-             , Currency(..)
-             , Currency'(..)
-             , MarketName(..)
-             , Balance(..) 
-             , Opts(..) )
-import qualified Types as T
-
-import           Prelude as P
-import           Data.Text (Text)
-import qualified Data.Text as Text 
-import           Data.Monoid ((<>))
 import           Data.Aeson
-import           Data.Aeson.Types (Parser(..),Array)
-import           Data.ByteString (ByteString)
+import           Data.Aeson.Types (Parser (..))
+import           Data.Text        (Text)
+import qualified Data.Vector      as V
 import           GHC.Generics
-import qualified Data.HashMap.Lazy as HM
-import qualified Data.Vector as V
+import           Prelude          as P
 
 
 class Binance a where
         toText :: a -> Text
 
 instance Binance MarketName where
-        toText = T.toText 
+        toText = T.toText
 
 instance Binance Currency where
         toText = T.toText
@@ -42,9 +32,9 @@ instance FromJSON Ticker where
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \ o -> do
-                bal <- o .: "balances" 
+                bal <- o .: "balances"
                 Balance . filter (\(_,y) -> y /= 0) <$> mapM toBal (V.toList bal)
-                        where 
+                        where
                                 toBal :: Value -> Parser (Currency,Float)
                                 toBal = withObject "O" $ \ o -> do
                                         cur <- o .: "asset"

@@ -1,29 +1,27 @@
-{-# LANGUAGE DeriveGeneric,OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Types where
 
-import           Prelude as P
 import           Data.Aeson
-import           Data.Monoid ((<>),mconcat)
-import           Data.Map as Map
-import           Data.Text (Text)
-import           Data.List.Split (splitOn)
 import           Data.ByteString (ByteString)
-import qualified Data.Text as Text
-import           Text.Read (readMaybe)
+import           Data.Monoid     ((<>))
+import           Data.Text       (Text)
+import qualified Data.Text       as Text
 import           GHC.Generics
+import           Prelude         as P
 
 -------------------------------------
 type Params = [(Text,Text)]
 
-data Opts = 
+data Opts =
         Opts {
                optPath       :: String
-             , optParams     :: Params 
+             , optParams     :: Params
              , optApiType    :: String
              , optApiVersion :: String
              , optApiPubKey  :: ByteString
              , optApiPrivKey :: ByteString
-             , optPost       :: Params 
+             , optPost       :: Params
              }
 
 -------------------------------------
@@ -32,9 +30,9 @@ class Api a where
         fromText :: Text -> a
         toText :: a -> Text
 
-data Currency = 
-        FIAT Currency' 
-      | COIN Currency' 
+data Currency =
+        FIAT Currency'
+      | COIN Currency'
       | NA Text
  deriving(Eq,Show,Read,Generic)
 
@@ -48,21 +46,21 @@ instance Api Currency where
         fromText "XRP" = COIN XRP
         fromText "ETH" = COIN ETH
         fromText "LTC" = COIN LTC
-        fromText a     = NA a 
+        fromText a     = NA a
 
 
-data Currency' = 
-        EUR 
-      | BTC 
-      | XRP 
+data Currency' =
+        EUR
+      | BTC
+      | XRP
       | ETH
       | LTC
       | Text
-        deriving(Show,Eq,Read,Generic) 
+        deriving(Show,Eq,Read,Generic)
 
 instance FromJSON Currency'
 
-instance Api Currency' where 
+instance Api Currency' where
         toText EUR = "EUR"
         toText BTC = "BTC"
         toText XRP = "XRP"
@@ -83,21 +81,21 @@ data MarketName = MarketName Currency Currency
 instance Api MarketName where
         toText (MarketName a b) = toText a <> toText b
 
-        fromText a = MarketName (fromText $ head s) (fromText $ P.last s) 
+        fromText a = MarketName (fromText $ head s) (fromText $ P.last s)
                 where s = Text.splitOn "-" a
 
 newtype Balance = Balance [(Currency,Float)]
         deriving(Show,Generic)
 
-data Ticker = 
+data Ticker =
         Ticker {
                  tickerBid    :: Float
                , tickerAsk    :: Float
                , tickerVolume :: Maybe Float
                }
-         deriving (Eq,Show,Generic) 
+         deriving (Eq,Show,Generic)
 
-data Order = 
+data Order =
         Order {
                 orderMarket :: MarketName
               , orderPrice  :: Text
