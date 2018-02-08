@@ -44,7 +44,7 @@ This helps with wrangling data into the unified model and vice-versa. The `toTex
 Implementations of the exchanges will often follow the following pattern:
 ```Haskell
 import qualified Types as T
-class Kraken where
+instance Kraken Currency where
   toText (COIN BTC) = "XBT"
   toText a          = T.toText a
   
