@@ -35,6 +35,7 @@ instance Kraken Currency where
 
         toAsset (COIN a) = "X" <> toText (COIN a)
         toAsset (FIAT a) = "Z" <> toText (FIAT a)
+        toAsset (NA a)   = "X" <> toText (NA a)
 
 
 instance FromJSON Ticker where

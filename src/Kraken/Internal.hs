@@ -27,7 +27,7 @@ getUrl Opts{..} f = intercalate "/" $ f [ "https://api.kraken.com"
                                         , optPath ]
 
 getUri :: Opts -> String
-getUri opts = getUrl opts (\ (x:xs) -> "":xs)
+getUri opts = getUrl opts (\ (_:xs) -> "":xs)
 
 apiSign :: Opts -> String -> ByteString
 apiSign opts@Opts{..} nonce = B64.encode $ SHA512.hmac b64Api

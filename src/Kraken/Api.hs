@@ -11,6 +11,7 @@ import           Data.Text             (Text)
 import           Kraken.Internal
 import           Kraken.Types
 
+defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
 
 getTicker :: MarketName -> IO (Either String Ticker)

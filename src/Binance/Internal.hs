@@ -34,9 +34,9 @@ apiSign Opts{..} = B16.encode $ SHA256.hmac optApiPrivKey totalParams
 
 -- HEADERS -------------------------------------------------------------------------------------------------------------
 getDefaults :: Opts -> Network.Wreq.Options
-getDefaults opts@Opts{..} = defaults & header "Accept" .~ ["application/json"]
-                                     & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-                                     & params .~ optParams
+getDefaults Opts{..} = defaults & header "Accept" .~ ["application/json"]
+                                 & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
+                                 & params .~ optParams
 
 postDefaults :: Opts -> Network.Wreq.Options
 postDefaults opts@Opts{..} = getDefaults opts & header "X-MBX-APIKEY" .~ [optApiPubKey]

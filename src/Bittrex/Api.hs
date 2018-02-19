@@ -6,6 +6,7 @@ import           Types            (MarketName (..), Ticker (..))
 import           Bittrex.Internal
 import           Bittrex.Types
 
+defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public"
 
 getTicker :: MarketName -> IO (Either String Ticker)

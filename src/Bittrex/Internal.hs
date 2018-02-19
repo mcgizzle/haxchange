@@ -12,7 +12,7 @@ import qualified Data.Text       as Text
 import           Network.Wreq
 
 runApi :: FromJSON r => Opts -> IO (Either String r)
-runApi opts@Opts{..} = do
+runApi Opts{..} = do
         let opts' = defaults & header "Accept" .~ ["application/json"] & params .~  optParams
         let url = intercalate "/" [ "https://bittrex.com/api"
                                   , "v1.1"

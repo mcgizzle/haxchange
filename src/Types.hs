@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 module Types where
 
 import           Data.Aeson
@@ -39,6 +40,7 @@ data Currency =
 instance Api Currency where
         toText (FIAT a) = toText a
         toText (COIN a) = toText a
+        toText (NA a)   = a
 
         fromText "EUR" = FIAT EUR
         fromText "BTC" = COIN BTC

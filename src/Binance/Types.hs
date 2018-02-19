@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Binance.Types where
 
 import           Types            (Balance (..), Currency (..), MarketName (..),
@@ -7,7 +8,7 @@ import           Types            (Balance (..), Currency (..), MarketName (..),
 import qualified Types            as T
 
 import           Data.Aeson
-import           Data.Aeson.Types (Parser (..))
+import           Data.Aeson.Types (Parser)
 import           Data.Text        (Text)
 import qualified Data.Vector      as V
 import           GHC.Generics
