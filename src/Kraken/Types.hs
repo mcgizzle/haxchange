@@ -9,7 +9,6 @@ import qualified Types             as T
 
 import           Data.Aeson
 import           Data.HashMap.Lazy as HM
-import           Data.Maybe
 import           Data.Monoid       ((<>))
 import           Data.Text         (Text)
 import qualified Data.Text         as Text
@@ -40,11 +39,9 @@ instance Kraken Currency where
 
 instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
-                bid <- o .: "b"
-                ask <- o .: "a"
-                volume <- o .: "v"
-                pure $ Ticker (t bid) (t ask) (Just $ t volume)
-                        where t = read . head
+                (bid:bidVol:_) <- o .: "b"
+                (ask:askVol:_) <- o .: "a"
+                pure $ Ticker (read bid) (read ask) (read askVol) (read bidVol)
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \o -> pure $ Balance $ toBal <$> HM.toList o

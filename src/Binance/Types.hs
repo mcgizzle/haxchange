@@ -27,8 +27,9 @@ instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \ o -> do
                 bid    <- o .: "bidPrice"
                 ask    <- o .: "askPrice"
-                volume <- o .: "askQty"
-                pure $ Ticker (read bid) (read ask) (Just $ read volume)
+                askVolume <- o .: "askQty"
+                bidVolume <- o .: "bidQty"
+                pure $ Ticker (read bid) (read ask) (read askVolume) (read bidVolume)
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \ o -> do

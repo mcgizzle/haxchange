@@ -89,9 +89,10 @@ newtype Balance = Balance [(Currency,Float)]
 
 data Ticker =
         Ticker {
-                 tickerBid    :: Float
-               , tickerAsk    :: Float
-               , tickerVolume :: Maybe Float
+                 tickerBid       :: Float
+               , tickerAsk       :: Float
+               , tickerAskVolume :: Float
+               , tickerBidVolume :: Float
                }
          deriving (Eq,Show,Generic)
 

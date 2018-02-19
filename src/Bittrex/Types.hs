@@ -5,7 +5,6 @@ import           Types       (Currency (..), MarketName (..), Ticker (..))
 import qualified Types       as T
 
 import           Data.Aeson
-import           Data.Maybe
 import           Data.Monoid ((<>))
 import           Data.Text   as Text
 import           Prelude     as P
@@ -35,7 +34,11 @@ instance FromJSON MarketName where
 
 instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
-                bid <- o .: "Bid"
-                ask <- o .: "Ask"
-                pure $ Ticker bid ask Nothing
+                buy <- o .: "buy"
+                bid <- buy .: "Rate"
+                bidVol <- buy .: "Quantity"
+                sell <- o .: "sell"
+                ask <- sell .: "Quantity"
+                askVol <- o .: "Rate"
+                pure $ Ticker bid ask askVol bidVol
 
