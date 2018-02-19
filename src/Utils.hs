@@ -17,7 +17,7 @@ getNonce :: IO String
 getNonce = head . splitOn "." . show <$> getPOSIXTime
 
 timeInMilli :: IO String
-timeInMilli = show . (*) 1000 <$> fmap (\x -> read x :: Float) getNonce
+timeInMilli = show . (*) 1000 <$> fmap (\x -> read x :: Int) getNonce
 
 toFormParam :: Params -> [FormParam]
 toFormParam params = unzipWith (:=) $ first encodeUtf8 <$> params
