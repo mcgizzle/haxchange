@@ -12,7 +12,6 @@ import           Control.Applicative
 import           Data.Aeson
 import           Data.Aeson.Types    (Parser)
 import           Data.Text           (Text)
-import qualified Data.Text           as Text
 import qualified Data.Vector         as V
 import           GHC.Generics
 import           Prelude             as P
@@ -67,5 +66,5 @@ instance FromJSON Error where
                 msg <- o .: "msg"
                 pure $ parseError msg
 
---parseError :: Text -> Error
-parseError t                 = traceShow t $ UnknownError t
+parseError :: String -> Error
+parseError t = traceShow t $ UnknownError t

@@ -17,7 +17,6 @@ import           Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Char8  as Byte
 import           Data.List              (intercalate)
 import           Data.Monoid
-import           Data.Text              (pack)
 import           Network.Wreq
 
 -- HELPER FUNCTIONS ---------------------------------------------------------------------------

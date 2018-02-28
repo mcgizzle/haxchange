@@ -16,7 +16,6 @@ import           Data.List               (intercalate)
 import           Data.Monoid             ((<>))
 import           Data.Text.Encoding      (decodeUtf8)
 import           Network.Connection      (TLSSettings (..))
-import           Network.HTTP.Client     (HttpException)
 import           Network.HTTP.Client.TLS (mkManagerSettings)
 import           Network.Wreq
 
