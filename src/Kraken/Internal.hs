@@ -2,7 +2,8 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Internal where
 
-import           Types                  (Opts (..))
+import           Kraken.Types           ()
+import           Types                  (Error (..), Opts (..))
 import           Utils
 
 import           Control.Exception      as E
@@ -16,7 +17,7 @@ import           Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Char8  as Byte
 import           Data.List              (intercalate)
 import           Data.Monoid
-import           Network.HTTP.Client    (HttpException)
+import           Network.HTTP.Client    (HttpException (..))
 import           Network.Wreq
 
 -- HELPER FUNCTIONS ---------------------------------------------------------------------------
@@ -27,7 +28,7 @@ getUrl Opts{..} f = intercalate "/" $ f [ "https://api.kraken.com"
                                         , optPath ]
 
 getUri :: Opts -> String
-getUri opts = getUrl opts (\ (_:xs) -> "":xs)
+getUri opts = getUrl opts (\(_:xs) -> "":xs)
 
 apiSign :: Opts -> String -> ByteString
 apiSign opts@Opts{..} nonce = B64.encode $ SHA512.hmac b64Api
@@ -47,13 +48,13 @@ postDefaults nonce opts@Opts{..} = getDefaults opts & header "API-Key" .~ [optAp
                                                     & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
 
 -- API CALLS ----------------------------------------------------------------------------------
-runGetApi :: FromJSON r => Opts -> Bool -> IO (Either String r)
+runGetApi :: FromJSON j => Opts -> Bool -> IO (Either Error j)
 runGetApi opts@Opts{..} b = do
         let opts' = getDefaults opts
             url = getUrl opts id
         (getWith opts' url >>= handleRes b) `E.catch` handleExcept
 
-runPostApi :: FromJSON r => Opts -> Bool -> IO (Either String r)
+runPostApi :: FromJSON j => Opts -> Bool -> IO (Either Error j)
 runPostApi opts@Opts{..} b = do
         nonce <- getNonce
         let opts' = postDefaults nonce opts
@@ -62,17 +63,18 @@ runPostApi opts@Opts{..} b = do
         (postWith opts' url body >>= handleRes b) `E.catch` handleExcept
 
 -- HANDLER ----------------------------------------------------------------------------------
-handleExcept :: FromJSON r => HttpException -> IO (Either String r)
-handleExcept e = return $ Left $ "Network Exception: " ++ show e
+handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
+handleExcept = return . Left . Exception
 
-handleRes :: (Show a, FromJSON b, AsValue a) => Bool -> Response a -> IO (Either String b)
-handleRes member res = do
-        let err = res ^. responseBody . key "error" . _Array
-        let p = if member then res ^? responseBody . key "result" . members
-                          else res ^? responseBody . key "result"
-        case p of
-          Just p' -> case fromJSON p' of
-                          Success s -> return $ Right s
-                          Error e   -> return $ Left $ "Parse Error: " ++ e
-          Nothing -> return $ Left $ "Network Error: " ++ show err
-
+handleRes :: (Show a, FromJSON j, AsValue a) => Bool -> Response a -> IO (Either Error j)
+handleRes member resp = do
+        let (Just err) = resp ^? responseBody . key "error"
+        let result = if member then resp ^? responseBody . key "result" . members
+                               else resp ^? responseBody . key "result"
+        case result of
+            Just r  -> case fromJSON r of
+                         Success s -> return $ Right s
+                         Error e   -> return $ Left  $ ParseError $ show e
+            Nothing -> case fromJSON err of
+                         Success s -> return $ Left s
+                         Error e   -> return $ Left $ UnknownError $ show e

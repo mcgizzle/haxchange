@@ -2,8 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Api where
 
-import           Types                 (Balance (..), MarketName (..),
-                                        Opts (..), Order (..), Ticker (..))
+import           Types                 (Balance (..), Error (..),
+                                        MarketName (..), Opts (..), Order (..),
+                                        Ticker (..))
 
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as B8
@@ -14,13 +15,13 @@ import           Kraken.Types
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
 
-getTicker :: MarketName -> IO (Either String Ticker)
+getTicker :: MarketName -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optPath = "Ticker"
         , optParams = [("pair",toText mrkt)]
         } True
 
-getBalance :: IO (Either String Balance)
+getBalance :: IO (Either Error Balance)
 getBalance = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "Balance"
@@ -28,7 +29,7 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey } False
 
-placeOrder :: Text -> Order -> IO (Either String OrderResponse)
+placeOrder :: Text -> Order -> IO (Either Error OrderResponse)
 placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "AddOrder"
@@ -43,10 +44,10 @@ placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey } True
 
-buyLimit :: Order -> IO (Either String OrderResponse)
+buyLimit :: Order -> IO (Either Error OrderResponse)
 buyLimit = placeOrder "buy"
 
-sellLimit :: Order -> IO (Either String OrderResponse)
+sellLimit :: Order -> IO (Either Error OrderResponse)
 sellLimit = placeOrder "sell"
 
 --------------- KEYS ----------------------------------------------

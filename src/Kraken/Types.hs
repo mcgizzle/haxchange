@@ -4,7 +4,7 @@
 module Kraken.Types where
 
 import           Types             (Balance (..), Currency (..), Currency' (..),
-                                    MarketName (..), Ticker (..))
+                                    Error (..), MarketName (..), Ticker (..))
 import qualified Types             as T
 
 import           Data.Aeson
@@ -12,6 +12,7 @@ import           Data.HashMap.Lazy as HM
 import           Data.Monoid       ((<>))
 import           Data.Text         (Text)
 import qualified Data.Text         as Text
+import           Data.Vector       as V
 import           GHC.Generics
 import           Prelude           as P
 
@@ -53,3 +54,14 @@ instance FromJSON Balance where
                                       val' = case fromJSON val of
                                                Error _   -> 0.00
                                                Success v -> read v
+
+instance FromJSON Error where
+        parseJSON (Array a) = pure $ NetworkError $ parseError <$> (V.toList a)
+        parseJSON _         = pure $ UnknownError "NA"
+
+parseError :: Value -> T.Err
+parseError (String "EQuery:Unknown asset pair")  = T.UnknownAssetPair
+parseError (String "EService:Unavailable")       = T.Unavailable
+parseError (String "EGeneral:Invalid arguments") = T.InvalidArguments
+parseError (String e)                            = T.Err e
+parseError _                                     = T.Err "NA"

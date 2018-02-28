@@ -4,12 +4,13 @@
 module Types where
 
 import           Data.Aeson
-import           Data.ByteString (ByteString)
-import           Data.Monoid     ((<>))
-import           Data.Text       (Text)
-import qualified Data.Text       as Text
+import           Data.ByteString     (ByteString)
+import           Data.Monoid         ((<>))
+import           Data.Text           (Text)
+import qualified Data.Text           as Text
 import           GHC.Generics
-import           Prelude         as P
+import           Network.HTTP.Client (HttpException (..))
+import           Prelude             as P
 
 -------------------------------------
 type Params = [(Text,Text)]
@@ -105,3 +106,18 @@ data Order =
               , orderVolume :: Text
               }
         deriving(Eq,Show,Generic)
+
+--- ERRORS -------------------------------
+data Error =
+        Exception HttpException
+      | NetworkError [Err]
+      | ParseError String
+      | UnknownError String
+      deriving Show
+
+data Err =
+        UnknownAssetPair
+      | InvalidArguments
+      | Unavailable
+      | Err Text
+      deriving Show
