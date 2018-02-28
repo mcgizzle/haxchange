@@ -1,0 +1,55 @@
+name: crypto-binder
+version: 0.0.1
+synopsis: Cryptocurrency Exchange E-DSL
+description: See README at <https://github.com/McGizzle/crypto-binder#readme>
+maintainer: Sean McGroarty <mcgroas@tcd.ie>
+license: BSD3
+github: McGizzle/crypto-binder
+category: Web
+extra-source-files:
+  - README.md
+
+ghc-options: -Wall -fno-warn-orphans 
+
+dependencies:
+  - base >= 4.7 && < 5
+  - wreq
+  - connection
+  - http-client-tls
+  - http-client
+  - lens
+  - lens-aeson
+  - aeson
+  - containers
+  - text
+  - time
+  - iso8601-time
+  - split
+  - bytestring
+  - base64-bytestring
+  - base16-bytestring
+  - cryptohash-sha512
+  - cryptohash-sha256
+  - hex
+  - ghc
+  - unordered-containers
+  - vector
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Types
+    - Bittrex.Api
+    - Kraken.Api
+    - Binance.Api
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    dependencies:
+      - base >= 4.7 && < 5
+      - crypto-binder
+      - hspec
+      - hspec-expectations
