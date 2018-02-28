@@ -3,7 +3,7 @@
 module Binance.Internal where
 
 
-import           Types                   (Opts (..))
+import           Types                   (Error (..), Opts (..))
 import           Utils
 
 import           Control.Exception       as E
@@ -44,19 +44,19 @@ postDefaults opts@Opts{..} = getDefaults opts & header "X-MBX-APIKEY" .~ [optApi
                                               & params .~ optParams <> [("signature", decodeUtf8 (apiSign opts))]
 
 -- HTTP CALLS -----------------------------------------------------------------------------------------------------------
-runGetApi :: FromJSON r => Opts -> IO (Either String r)
+runGetApi :: FromJSON r => Opts -> IO (Either Error r)
 runGetApi = runGetApi' getDefaults
 
-runGetPrivApi :: FromJSON r => Opts -> IO (Either String r)
+runGetPrivApi :: FromJSON r => Opts -> IO (Either Error r)
 runGetPrivApi = runGetApi' postDefaults
 
-runGetApi' :: FromJSON r => (Opts -> Network.Wreq.Options) -> Opts -> IO (Either String r)
+runGetApi' :: FromJSON r => (Opts -> Network.Wreq.Options) -> Opts -> IO (Either Error r)
 runGetApi' fOpts opts@Opts{..} = do
         let opts' = fOpts opts
             url = getUrl opts
         (getWith opts' url >>= asValue >>= handleRes) `E.catch` handleExcept
 
-runPostApi :: FromJSON r => Opts -> IO (Either String r)
+runPostApi :: FromJSON r => Opts -> IO (Either Error r)
 runPostApi opts@Opts{..} = do
         let opts' = postDefaults opts
             url = getUrl opts
@@ -64,15 +64,12 @@ runPostApi opts@Opts{..} = do
         (postWith opts' url body >>= asValue >>= handleRes) `E.catch` handleExcept
 
 -- HANDLERS ------------------------------------------------------------------------------------------------------------
-handleExcept :: FromJSON r => HttpException -> IO (Either String r)
-handleExcept e = return $ Left $ "Network Exception: " ++ show e
-
-handleRes :: FromJSON b => Response Value -> IO (Either String b)
+handleRes :: FromJSON b => Response Value -> IO (Either Error b)
 handleRes res = do
         let p = res ^. responseBody
         case fromJSON p of
           Success s -> return $ Right s
-          Error e   -> return $ Left $ "Parse Error: " ++ e
+          Error e   -> return $ Left $ ParseError e
 
 
 

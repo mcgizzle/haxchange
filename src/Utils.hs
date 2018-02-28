@@ -4,12 +4,14 @@ module Utils where
 import           Types
 
 import           Control.Arrow         (first)
+import           Data.Aeson            (FromJSON)
 import           Data.ByteString       (ByteString)
 import           Data.List.Split       (splitOn)
 import           Data.Monoid           ((<>))
 import qualified Data.Text             as Text
 import           Data.Text.Encoding    (encodeUtf8)
 import           Data.Time.Clock.POSIX (getPOSIXTime)
+import           Network.HTTP.Client   (HttpException (..))
 import           Network.Wreq.Types    (FormParam (..))
 import           Util                  (unzipWith)
 
@@ -24,5 +26,8 @@ toFormParam params = unzipWith (:=) $ first encodeUtf8 <$> params
 
 fromParams :: Params -> ByteString
 fromParams params = encodeUtf8 $ Text.intercalate "&" ((\(x,y) -> x <> "=" <> y) <$> params)
+
+handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
+handleExcept = return . Left . Exception
 
 

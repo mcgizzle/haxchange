@@ -2,8 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types                 (Balance (..), MarketName (..),
-                                        Opts (..), Order (..), Ticker (..))
+import           Types                 (Balance (..), Error, MarketName (..),
+                                        Opts (..), Order (..), OrderId,
+                                        Ticker (..))
 import           Utils
 
 import           Binance.Internal
@@ -16,17 +17,17 @@ import qualified Data.Text             as Text
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty
 
-ping :: IO (Either String ServerTime)
+ping :: IO (Either Error ServerTime)
 ping = runGetApi defaultOpts { optPath = "time"}
 
-getTicker :: MarketName -> IO (Either String Ticker)
+getTicker :: MarketName -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optApiVersion = "v3"
         , optPath       = "ticker/bookTicker"
         , optParams     = [("symbol",toText mrkt)]
         }
 
-getBalance :: IO (Either String Balance)
+getBalance :: IO (Either Error Balance)
 getBalance = withKeys $ \ pubKey privKey -> do
         t <- timeInMilli
         runGetPrivApi defaultOpts
@@ -37,7 +38,7 @@ getBalance = withKeys $ \ pubKey privKey -> do
                 , optParams = [ ("timestamp",Text.pack t)]
                 }
 
-placeOrder :: Text -> Order -> IO (Either String OrderResponse)
+placeOrder :: Text -> Order -> IO (Either Error OrderId)
 placeOrder side Order{..} = withKeys $ \ pubKey privKey -> do
         t <- timeInMilli
         runPostApi defaultOpts
@@ -55,10 +56,10 @@ placeOrder side Order{..} = withKeys $ \ pubKey privKey -> do
                                 , ("timestamp",Text.pack t) ]
                     }
 
-buyLimit :: Order -> IO (Either String OrderResponse)
+buyLimit :: Order -> IO (Either Error OrderId)
 buyLimit = placeOrder "buy"
 
-sellLimit :: Order -> IO (Either String OrderResponse)
+sellLimit :: Order -> IO (Either Error OrderId)
 sellLimit = placeOrder "sell"
 
 --------------- KEYS ----------------------------------------------

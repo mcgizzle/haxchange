@@ -107,17 +107,29 @@ data Order =
               }
         deriving(Eq,Show,Generic)
 
+newtype OrderId = OrderId Text
+        deriving(Generic,Show)
+
+
+
 --- ERRORS -------------------------------
 data Error =
         Exception HttpException
-      | NetworkError [Err]
+      | ExchangeError [Err]
       | ParseError String
       | UnknownError String
       deriving Show
+
+instance Eq Error where
+        Exception _ == Exception _ = True
+        ExchangeError a == ExchangeError b = a == b
+        ParseError a == ParseError b = a == b
+        _ == _ = False
+
 
 data Err =
         UnknownAssetPair
       | InvalidArguments
       | Unavailable
       | Err Text
-      deriving Show
+      deriving (Eq,Show)
