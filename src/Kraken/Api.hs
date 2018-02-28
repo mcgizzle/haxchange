@@ -4,7 +4,7 @@ module Kraken.Api where
 
 import           Types                 (Balance (..), Error (..),
                                         MarketName (..), Opts (..), Order (..),
-                                        Ticker (..))
+                                        OrderId, Ticker (..))
 
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as B8
@@ -29,7 +29,7 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey } False
 
-placeOrder :: Text -> Order -> IO (Either Error OrderResponse)
+placeOrder :: Text -> Order -> IO (Either Error OrderId)
 placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "AddOrder"
@@ -44,10 +44,10 @@ placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey } True
 
-buyLimit :: Order -> IO (Either Error OrderResponse)
+buyLimit :: Order -> IO (Either Error OrderId)
 buyLimit = placeOrder "buy"
 
-sellLimit :: Order -> IO (Either Error OrderResponse)
+sellLimit :: Order -> IO (Either Error OrderId)
 sellLimit = placeOrder "sell"
 
 --------------- KEYS ----------------------------------------------

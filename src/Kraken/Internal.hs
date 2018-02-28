@@ -17,7 +17,7 @@ import           Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Char8  as Byte
 import           Data.List              (intercalate)
 import           Data.Monoid
-import           Network.HTTP.Client    (HttpException (..))
+import           Data.Text              (pack)
 import           Network.Wreq
 
 -- HELPER FUNCTIONS ---------------------------------------------------------------------------
@@ -63,9 +63,6 @@ runPostApi opts@Opts{..} b = do
         (postWith opts' url body >>= handleRes b) `E.catch` handleExcept
 
 -- HANDLER ----------------------------------------------------------------------------------
-handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
-handleExcept = return . Left . Exception
-
 handleRes :: (Show a, FromJSON j, AsValue a) => Bool -> Response a -> IO (Either Error j)
 handleRes member resp = do
         let (Just err) = resp ^? responseBody . key "error"
@@ -77,4 +74,4 @@ handleRes member resp = do
                          Error e   -> return $ Left  $ ParseError $ show e
             Nothing -> case fromJSON err of
                          Success s -> return $ Left s
-                         Error e   -> return $ Left $ UnknownError $ show e
+                         Error e   -> return $ Left $ UnknownError e

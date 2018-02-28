@@ -3,27 +3,30 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Kraken.Types where
 
-import           Types             (Balance (..), Currency (..), Currency' (..),
-                                    Error (..), MarketName (..), Ticker (..))
-import qualified Types             as T
+import           Types               (Balance (..), Currency (..),
+                                      Currency' (..), Error (..),
+                                      MarketName (..), OrderId (..),
+                                      Ticker (..))
+import qualified Types               as T
 
+import           Control.Applicative
 import           Data.Aeson
-import           Data.HashMap.Lazy as HM
-import           Data.Monoid       ((<>))
-import           Data.Text         (Text)
-import qualified Data.Text         as Text
-import           Data.Vector       as V
-import           GHC.Generics
-import           Prelude           as P
+import           Data.HashMap.Lazy   as HM
+import           Data.Monoid         ((<>))
+import           Data.Text           (Text)
+import qualified Data.Text           as Text
+import           Data.Vector         as V
+import           Prelude             as P
 
 class Kraken a where
         toText :: a -> Text
         toAsset :: a -> Text
 
-newtype OrderResponse = OrderResponse { order :: Text }
-        deriving(Generic,Show)
+instance FromJSON OrderId where
+        parseJSON = withObject "OrderId" $ \ o -> do
+                txids <- o .: "txid" <|> o .: "order"
+                pure $ OrderId txids
 
-instance FromJSON OrderResponse
 
 instance Kraken MarketName where
         toText = T.toText
@@ -56,7 +59,7 @@ instance FromJSON Balance where
                                                Success v -> read v
 
 instance FromJSON Error where
-        parseJSON (Array a) = pure $ NetworkError $ parseError <$> (V.toList a)
+        parseJSON (Array a) = pure $ ExchangeError $ parseError <$> V.toList a
         parseJSON _         = pure $ UnknownError "NA"
 
 parseError :: Value -> T.Err
