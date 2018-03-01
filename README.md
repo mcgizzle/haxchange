@@ -15,10 +15,20 @@ Bittrex | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication
 
 ## Templates
 
-There is a template folder which contains the modules and tests necessary for adding a new exchange, along with most of the bolier plate. To contribute simple copy that folder and rename all tags.
-`<newmodule>` to `<exchange-name>`
+There is a template folder which contains the modules and tests necessary for adding a new exchange, along with most of the bolier plate. 
 
-Development should be done in test-driven manner. 
+There is a script for creating the files needed to add a new exchange.
+
+### Adding a new exchange
+
+run the following
+
+```
+cd templates
+stack make.hs <name of new exchange>
+```
+
+This will copy the template files replacing all `<newmodule>` tags with the name of the new exchange.
 
 Contributions are welcomed with open arms :)
 
@@ -50,4 +60,6 @@ instance Kraken Currency where
   
 ```
 Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
+
+For more information please see the source
 
