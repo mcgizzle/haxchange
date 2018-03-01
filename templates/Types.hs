@@ -27,3 +27,7 @@ instance <newmodule> Currency where
 instance FromJSON Ticker 
 
 instance FromJSON Balance 
+
+instance FromJSON OrderId
+
+instance FromJSON ServerTime

@@ -13,7 +13,6 @@ import           Data.Aeson
 import           Data.Aeson.Types    (Parser)
 import           Data.Text           (Text)
 import qualified Data.Vector         as V
-import           GHC.Generics
 import           Prelude             as P
 
 import           Debug.Trace

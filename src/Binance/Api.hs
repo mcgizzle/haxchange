@@ -2,16 +2,14 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types                 (Balance, Error, MarketName, Opts (..),
-                                        Order (..), OrderId, ServerTime, Ticker)
+import           Types            (Balance, Error, MarketName, Opts (..),
+                                   Order (..), OrderId, ServerTime, Ticker)
 import           Utils
 
 import           Binance.Internal
 import           Binance.Types
-import           Data.ByteString       (ByteString)
-import qualified Data.ByteString.Char8 as B8
-import           Data.Text             (Text)
-import qualified Data.Text             as Text
+import           Data.Text        (Text)
+import qualified Data.Text        as Text
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty

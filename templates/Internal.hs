@@ -40,13 +40,13 @@ postDefaults :: Opts -> Network.Wreq.Options
 postDefaults opts@Opts{..} = getDefaults opts & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
 
 -- HTTP CALLS -----------------------------------------------------------------------------------------------------------
-runGetApi :: FromJSON r => Opts -> IO (Either String r)
+runGetApi :: FromJSON j => Opts -> IO (Either Error j)
 runGetApi opts@Opts{..} = do
         let opts' = getDefaults opts
             url = getUrl opts
         (getWith opts' url >>= asValue >>= handleRes) `E.catch` handleExcept
 
-runPostApi :: FromJSON r => Opts -> IO (Either String r)
+runPostApi :: FromJSON j => Opts -> IO (Either Error j)
 runPostApi opts@Opts{..} = do
         let opts' = postDefaults opts        
             url = getUrl opts
@@ -54,10 +54,7 @@ runPostApi opts@Opts{..} = do
         (postWith opts' url body >>= asValue >>= handleRes) `E.catch` handleExcept
 
 -- HANDLERS ------------------------------------------------------------------------------------------------------------
-handleExcept :: FromJSON r => HttpException -> IO (Either String r)
-handleExcept e = return $ Left $ "Network Exception: " ++ show e
-
-handleRes :: FromJSON b => Response Value -> IO (Either String b)
+handleRes :: FromJSON j => Response Value -> IO (Either Error j)
 handleRes res = do
         let p = res ^. responseBody 
         case fromJSON p of
