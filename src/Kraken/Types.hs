@@ -6,7 +6,7 @@ module Kraken.Types where
 import           Types               (Balance (..), Currency (..),
                                       Currency' (..), Error (..),
                                       MarketName (..), OrderId (..),
-                                      Ticker (..))
+                                      ServerTime (..), Ticker (..))
 import qualified Types               as T
 
 import           Control.Applicative
@@ -57,6 +57,10 @@ instance FromJSON Balance where
                                       val' = case fromJSON val of
                                                Error _   -> 0.00
                                                Success v -> read v
+instance FromJSON ServerTime where
+        parseJSON = withObject "Time" $ \ o ->
+                ServerTime <$> o .: "unixtime"
+
 
 instance FromJSON Error where
         parseJSON (Array a) = pure $ ExchangeError $ parseError <$> V.toList a

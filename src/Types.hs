@@ -110,7 +110,8 @@ data Order =
 newtype OrderId = OrderId Text
         deriving(Generic,Show)
 
-
+newtype ServerTime = ServerTime Float
+        deriving (Show,Generic)
 
 --- ERRORS -------------------------------
 data Error =

@@ -2,18 +2,20 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Api where
 
-import           Types                 (Balance (..), Error (..),
-                                        MarketName (..), Opts (..), Order (..),
-                                        OrderId, Ticker (..))
+import           Types           (Balance (..), Error (..), MarketName (..),
+                                  Opts (..), Order (..), OrderId, ServerTime,
+                                  Ticker (..))
+import           Utils
 
-import           Data.ByteString       (ByteString)
-import qualified Data.ByteString.Char8 as B8
-import           Data.Text             (Text)
+import           Data.Text       (Text)
 import           Kraken.Internal
 import           Kraken.Types
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
+
+ping :: IO (Either Error ServerTime)
+ping = runGetApi defaultOpts { optPath = "Time" } False
 
 getTicker :: MarketName -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
@@ -22,7 +24,7 @@ getTicker mrkt = runGetApi defaultOpts
         } True
 
 getBalance :: IO (Either Error Balance)
-getBalance = withKeys $ \ pubKey privKey ->
+getBalance = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "Balance"
                 , optApiType = "private"
@@ -30,7 +32,7 @@ getBalance = withKeys $ \ pubKey privKey ->
                 , optApiPubKey = pubKey } False
 
 placeOrder :: Text -> Order -> IO (Either Error OrderId)
-placeOrder t Order{..} = withKeys $ \ pubKey privKey ->
+placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "AddOrder"
                 , optApiType = "private"
@@ -50,10 +52,3 @@ buyLimit = placeOrder "buy"
 sellLimit :: Order -> IO (Either Error OrderId)
 sellLimit = placeOrder "sell"
 
---------------- KEYS ----------------------------------------------
-getKeys :: IO [ByteString]
-getKeys = B8.lines <$> B8.readFile "keys/kraken.txt"
-withKeys :: (ByteString -> ByteString -> IO b) -> IO b
-withKeys f = do
-        [pubKey,privKey] <- getKeys
-        f pubKey privKey
