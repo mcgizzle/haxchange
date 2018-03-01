@@ -8,10 +8,10 @@ import           Types
 
 spec :: Spec
 spec = do
---        describe "Connectivity" $ do
---                it "Pings server" $ do
---                        res <- ping
---                        res `shouldSatisfy` isRight
+        describe "Connectivity" $ do
+                it "Pings server" $ do
+                        res <- ping
+                        res `shouldSatisfy` isRight
         describe "GET" $ do
                 it "Account balance" $ do
                         res <- getBalance
