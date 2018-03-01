@@ -6,6 +6,7 @@ import           Types
 import           Control.Arrow         (first)
 import           Data.Aeson            (FromJSON)
 import           Data.ByteString       (ByteString)
+import qualified Data.ByteString.Char8 as B8
 import           Data.List.Split       (splitOn)
 import           Data.Monoid           ((<>))
 import qualified Data.Text             as Text
@@ -30,4 +31,11 @@ fromParams params = encodeUtf8 $ Text.intercalate "&" ((\(x,y) -> x <> "=" <> y)
 handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
 handleExcept = return . Left . Exception
 
+--------------- KEYS ----------------------------------------------
+getKeys :: FilePath -> IO [ByteString]
+getKeys path = B8.lines <$> B8.readFile path
 
+withKeys :: FilePath -> (ByteString -> ByteString -> IO b) -> IO b
+withKeys path f = do
+        [pubKey,privKey] <- getKeys path
+        f pubKey privKey

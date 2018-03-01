@@ -2,9 +2,8 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types                 (Balance (..), Error, MarketName (..),
-                                        Opts (..), Order (..), OrderId,
-                                        Ticker (..))
+import           Types                 (Balance, Error, MarketName, Opts (..),
+                                        Order (..), OrderId, ServerTime, Ticker)
 import           Utils
 
 import           Binance.Internal
@@ -28,7 +27,7 @@ getTicker mrkt = runGetApi defaultOpts
         }
 
 getBalance :: IO (Either Error Balance)
-getBalance = withKeys $ \ pubKey privKey -> do
+getBalance = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
         t <- timeInMilli
         runGetPrivApi defaultOpts
                 { optPath = "account"
@@ -39,7 +38,7 @@ getBalance = withKeys $ \ pubKey privKey -> do
                 }
 
 placeOrder :: Text -> Order -> IO (Either Error OrderId)
-placeOrder side Order{..} = withKeys $ \ pubKey privKey -> do
+placeOrder side Order{..} = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
         t <- timeInMilli
         runPostApi defaultOpts
                     {
@@ -61,11 +60,3 @@ buyLimit = placeOrder "buy"
 
 sellLimit :: Order -> IO (Either Error OrderId)
 sellLimit = placeOrder "sell"
-
---------------- KEYS ----------------------------------------------
-getKeys :: IO [ByteString]
-getKeys = B8.lines <$> B8.readFile "keys/binance.txt"
-withKeys :: (ByteString -> ByteString -> IO b) -> IO b
-withKeys f = do
-        [pubKey,privKey] <- getKeys
-        f pubKey privKey

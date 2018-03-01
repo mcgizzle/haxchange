@@ -5,7 +5,7 @@ module Binance.Types where
 
 import           Types               (Balance (..), Currency (..), Error (..),
                                       MarketName (..), OrderId (..),
-                                      Ticker (..))
+                                      ServerTime (..), Ticker (..))
 import qualified Types               as T
 
 import           Control.Applicative
@@ -49,12 +49,9 @@ instance FromJSON Balance where
 
 instance FromJSON Currency
 
-newtype ServerTime = ServerTime Float
-        deriving (Show,Generic)
 instance FromJSON ServerTime where
-        parseJSON = withObject "ServerTime" $ \o -> do
-                time <- o .: "serverTime"
-                pure $ ServerTime time
+        parseJSON = withObject "ServerTime" $ \o ->
+                ServerTime <$> o .: "serverTime"
 
 instance FromJSON OrderId where
         parseJSON = withObject "OrderId" $ \ o ->do
