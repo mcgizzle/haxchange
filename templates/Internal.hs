@@ -41,7 +41,7 @@ postDefaults opts@Opts{..} = getDefaults opts & header "Content-Type" .~ ["appli
 
 -- HTTP CALLS -----------------------------------------------------------------------------------------------------------
 runGetApi :: FromJSON j => Opts -> IO (Either Error j)
-runGetApi opts@Opts{..} = do
+runGetApi opts = do
         let opts' = getDefaults opts
             url = getUrl opts
         (getWith opts' url >>= asValue >>= handleRes) `E.catch` handleExcept

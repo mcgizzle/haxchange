@@ -15,13 +15,13 @@ import           Data.Text (Text)
 import qualified Data.Text as Text 
 import           Data.Aeson
 
-class <newmodule> a where
+class <newmodule>Text a where
         toText :: a -> Text
 
-instance <newmodule> MarketName where
+instance <newmodule>Text MarketName where
         toText = T.toText 
 
-instance <newmodule> Currency where
+instance <newmodule>Text Currency where
         toText = T.toText
 
 instance FromJSON Ticker 

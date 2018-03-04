@@ -28,7 +28,7 @@ data Opts =
 
 -------------------------------------
 
-class Api a where
+class TextConvert a where
         fromText :: Text -> a
         toText :: a -> Text
 
@@ -38,7 +38,7 @@ data Currency =
       | NA Text
  deriving(Eq,Show,Read,Generic)
 
-instance Api Currency where
+instance TextConvert Currency where
         toText (FIAT a) = toText a
         toText (COIN a) = toText a
         toText (NA a)   = a
@@ -51,7 +51,6 @@ instance Api Currency where
         fromText "LTC" = COIN LTC
         fromText a     = NA a
 
-
 data Currency' =
         EUR
       | BTC
@@ -63,7 +62,7 @@ data Currency' =
 
 instance FromJSON Currency'
 
-instance Api Currency' where
+instance TextConvert Currency' where
         toText EUR = "EUR"
         toText BTC = "BTC"
         toText XRP = "XRP"
@@ -81,7 +80,7 @@ instance Api Currency' where
 data MarketName = MarketName Currency Currency
         deriving (Show,Eq,Read)
 
-instance Api MarketName where
+instance TextConvert MarketName where
         toText (MarketName a b) = toText a <> toText b
 
         fromText a = MarketName (fromText $ head s) (fromText $ P.last s)
@@ -108,7 +107,7 @@ data Order =
         deriving(Eq,Show,Generic)
 
 newtype OrderId = OrderId Text
-        deriving(Generic,Show)
+        deriving (Show,Generic)
 
 newtype ServerTime = ServerTime Float
         deriving (Show,Generic)
@@ -126,7 +125,6 @@ instance Eq Error where
         ExchangeError a == ExchangeError b = a == b
         ParseError a == ParseError b = a == b
         _ == _ = False
-
 
 data Err =
         UnknownAssetPair

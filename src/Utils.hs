@@ -26,7 +26,7 @@ toFormParam :: Params -> [FormParam]
 toFormParam params = unzipWith (:=) $ first encodeUtf8 <$> params
 
 fromParams :: Params -> ByteString
-fromParams params = encodeUtf8 $ Text.intercalate "&" ((\(x,y) -> x <> "=" <> y) <$> params)
+fromParams = encodeUtf8 . Text.intercalate "&" . unzipWith (\x y -> x <> "=" <> y)
 
 handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
 handleExcept = return . Left . Exception
