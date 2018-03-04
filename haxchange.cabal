@@ -2,15 +2,15 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e38560b711078639a3914b82c4dddad986e56244d44b920e47f41ada2c636cba
+-- hash: 8ff4e7601a52fdb10100857e58c58e30548ea42f2908d18e0ea39a7f2392d0cc
 
-name:           crypto-binder
+name:           haxchange
 version:        0.0.1
 synopsis:       Cryptocurrency Exchange E-DSL
-description:    See README at <https://github.com/McGizzle/crypto-binder#readme>
+description:    See README at <https://github.com/McGizzle/haxchange#readme>
 category:       Web
-homepage:       https://github.com/McGizzle/crypto-binder#readme
-bug-reports:    https://github.com/McGizzle/crypto-binder/issues
+homepage:       https://github.com/McGizzle/haxchange#readme
+bug-reports:    https://github.com/McGizzle/haxchange/issues
 maintainer:     Sean McGroarty <mcgroas@tcd.ie>
 license:        BSD3
 license-file:   LICENSE
@@ -22,7 +22,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/McGizzle/crypto-binder
+  location: https://github.com/McGizzle/haxchange
 
 library
   hs-source-dirs:
@@ -64,7 +64,7 @@ library
       Kraken.Internal
       Kraken.Types
       Utils
-      Paths_crypto_binder
+      Paths_haxchange
   default-language: Haskell2010
 
 test-suite spec
@@ -102,5 +102,5 @@ test-suite spec
   other-modules:
       Binance.ApiSpec
       Kraken.ApiSpec
-      Paths_crypto_binder
+      Paths_haxchange
   default-language: Haskell2010

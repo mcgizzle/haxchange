@@ -1,10 +1,10 @@
-name: crypto-binder
+name: haxchange 
 version: 0.0.1
 synopsis: Cryptocurrency Exchange E-DSL
-description: See README at <https://github.com/McGizzle/crypto-binder#readme>
+description: See README at <https://github.com/McGizzle/haxchange#readme>
 maintainer: Sean McGroarty <mcgroas@tcd.ie>
 license: BSD3
-github: McGizzle/crypto-binder
+github: McGizzle/haxchange
 category: Web
 extra-source-files:
   - README.md

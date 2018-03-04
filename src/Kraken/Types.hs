@@ -40,7 +40,7 @@ instance FromJSON OrderId where
             parseObj [(_, Object o')] = do
                     res <- o' .: "txid" <|> o' .: "order"
                     pure $ OrderId res
-            parseObj _               = fail "More than one object was returned <|> Object not nested"
+            parseObj _               = fail "More than one object was returned || Object not nested"
         parseJSON _ = fail "Object not received"
 
 instance FromJSON Ticker where
@@ -55,13 +55,14 @@ instance FromJSON Ticker where
 
 instance FromJSON Balance where
         parseJSON = withObject "Balance" $ \o -> pure $ Balance $ toBal <$> HM.toList o
-                where
-                        toBal :: (Text,Value) -> (Currency,Float)
-                        toBal (cur,val) = (cur',val')
-                                where cur' = T.fromText $ Text.tail cur
-                                      val' = case fromJSON val of
-                                               Error _   -> 0.00
-                                               Success v -> read v
+          where
+            toBal :: (Text,Value) -> (Currency,Float)
+            toBal (cur,val) = (cur',val')
+              where cur' = T.fromText $ Text.tail cur
+                    val' = case fromJSON val of
+                             Error _   -> 0.00
+                             Success v -> read v
+
 instance FromJSON ServerTime where
         parseJSON = withObject "Time" $ \ o ->
                 ServerTime <$> o .: "unixtime"
