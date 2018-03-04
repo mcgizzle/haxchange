@@ -18,13 +18,13 @@ data Opts = Opts
   , optApiType :: String
   }
 
-class Bittrex a where
+class BittrexText a where
         toText :: a -> Text
 
-instance Bittrex MarketName where
+instance BittrexText MarketName where
         toText (MarketName a b) = toText a <> "-" <> toText b
 
-instance Bittrex Currency where
+instance BittrexText Currency where
         toText = T.toText
 
 instance FromJSON MarketName where

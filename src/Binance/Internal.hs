@@ -28,14 +28,14 @@ getUrl Opts{..} = intercalate "/" [ "https://api.binance.com"
                                   , optPath ]
 
 apiSign :: Opts -> ByteString
-apiSign Opts{..} = B16.encode $ SHA256.hmac optApiPrivKey totalParams
-        where totalParams = fromParams optPost <> fromParams optParams
+apiSign Opts{..} = B16.encode $ SHA256.hmac optApiPrivKey
+                              $ fromParams optPost <> fromParams optParams
 
 -- HEADERS -------------------------------------------------------------------------------------------------------------
 getDefaults :: Opts -> Network.Wreq.Options
 getDefaults Opts{..} = defaults & header "Accept" .~ ["application/json"]
-                                 & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-                                 & params .~ optParams
+                                & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
+                                & params .~ optParams
 
 postDefaults :: Opts -> Network.Wreq.Options
 postDefaults opts@Opts{..} = getDefaults opts & header "X-MBX-APIKEY" .~ [optApiPubKey]
@@ -43,19 +43,19 @@ postDefaults opts@Opts{..} = getDefaults opts & header "X-MBX-APIKEY" .~ [optApi
                                               & params .~ optParams <> [("signature", decodeUtf8 (apiSign opts))]
 
 -- HTTP CALLS -----------------------------------------------------------------------------------------------------------
-runGetApi :: FromJSON r => Opts -> IO (Either Error r)
+runGetApi :: FromJSON j => Opts -> IO (Either Error j)
 runGetApi = runGetApi' getDefaults
 
-runGetPrivApi :: FromJSON r => Opts -> IO (Either Error r)
+runGetPrivApi :: FromJSON j => Opts -> IO (Either Error j)
 runGetPrivApi = runGetApi' postDefaults
 
-runGetApi' :: FromJSON r => (Opts -> Network.Wreq.Options) -> Opts -> IO (Either Error r)
-runGetApi' fOpts opts@Opts{..} = do
-        let opts' = fOpts opts
+runGetApi' :: FromJSON j => (Opts -> Network.Wreq.Options) -> Opts -> IO (Either Error j)
+runGetApi' f opts = do
+        let opts' = f opts
             url = getUrl opts
         (getWith opts' url >>= asValue >>= handleRes) `E.catch` handleExcept
 
-runPostApi :: FromJSON r => Opts -> IO (Either Error r)
+runPostApi :: FromJSON j => Opts -> IO (Either Error j)
 runPostApi opts@Opts{..} = do
         let opts' = postDefaults opts
             url = getUrl opts
@@ -63,7 +63,7 @@ runPostApi opts@Opts{..} = do
         (postWith opts' url body >>= asValue >>= handleRes) `E.catch` handleExcept
 
 -- HANDLERS ------------------------------------------------------------------------------------------------------------
-handleRes :: FromJSON b => Response Value -> IO (Either Error b)
+handleRes :: FromJSON j => Response Value -> IO (Either Error j)
 handleRes res = do
         let p = res ^. responseBody
         case fromJSON p of

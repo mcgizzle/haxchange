@@ -17,13 +17,13 @@ import           Prelude             as P
 
 import           Debug.Trace
 
-class Binance a where
+class BinanceText a where
         toText :: a -> Text
 
-instance Binance MarketName where
+instance BinanceText MarketName where
         toText = T.toText
 
-instance Binance Currency where
+instance BinanceText Currency where
         toText = T.toText
 
 instance FromJSON Ticker where
