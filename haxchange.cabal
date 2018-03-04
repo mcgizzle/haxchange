@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8ff4e7601a52fdb10100857e58c58e30548ea42f2908d18e0ea39a7f2392d0cc
+-- hash: 309035ad3e35043399fcdf836b5f294bd251434a9b98c1a40630994ad182bec1
 
 name:           haxchange
 version:        0.0.1
@@ -39,10 +39,8 @@ library
     , cryptohash-sha256
     , cryptohash-sha512
     , ghc
-    , hex
     , http-client
     , http-client-tls
-    , iso8601-time
     , lens
     , lens-aeson
     , split
@@ -85,12 +83,10 @@ test-suite spec
     , cryptohash-sha256
     , cryptohash-sha512
     , ghc
-    , hex
     , hspec
     , hspec-expectations
     , http-client
     , http-client-tls
-    , iso8601-time
     , lens
     , lens-aeson
     , split
