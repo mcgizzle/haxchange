@@ -1,11 +1,11 @@
 # crypto-binder 🤑
 
 ## About
-The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbritaging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
+The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbitraging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
 ## Progress
 
-Exchange | getTicker | getBalance | buyLimit | sellLimit 
+Exchange | getTicker | getBalance | buyLimit | sellLimit  
 ---|---|---|---|---
 Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
@@ -14,7 +14,7 @@ Bittrex | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication
 *New accounts are currently blocked 
 
 ## Templates
-
+ 
 There is a template folder which contains the modules and tests necessary for adding a new exchange, along with most of the bolier plate. 
 
 There is a script for creating the files needed to add a new exchange.
@@ -37,16 +37,16 @@ There are shared ADT's that are uniform accross all exchanges. Each exchange imp
 
 In order to improve effeciency, the data types are mostly [Text](http://sorryiwillinsertalinkatsomestage.com).
 
-There is an *Api* type class which has the following functions
+There is an *TextConvert* type class which has the following functions
 ```Haskell
-class Api where
+class TextConvert where
   toText :: a -> Text
   fromText :: Text -> a
 ```
 
 Each exchange then implements its own type class
 ```Haskell
-class <Exchange> where
+class <Exchange>Text where
   toText :: a -> Text
 ```
 This helps with wrangling data into the unified model and vice-versa. The `toText` function is used to override the general version for special cases. 
@@ -54,7 +54,7 @@ This helps with wrangling data into the unified model and vice-versa. The `toTex
 Implementations of the exchanges will often follow the following pattern:
 ```Haskell
 import qualified Types as T
-instance Kraken Currency where
+instance KrakenText Currency where
   toText (COIN BTC) = "XBT"
   toText a          = T.toText a
   

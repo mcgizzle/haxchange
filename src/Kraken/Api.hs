@@ -15,13 +15,13 @@ defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
 
 ping :: IO (Either Error ServerTime)
-ping = runGetApi defaultOpts { optPath = "Time" } False
+ping = runGetApi defaultOpts { optPath = "Time" }
 
 getTicker :: MarketName -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optPath = "Ticker"
         , optParams = [("pair",toText mrkt)]
-        } True
+        }
 
 getBalance :: IO (Either Error Balance)
 getBalance = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
@@ -29,7 +29,7 @@ getBalance = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
                 { optPath = "Balance"
                 , optApiType = "private"
                 , optApiPrivKey = privKey
-                , optApiPubKey = pubKey } False
+                , optApiPubKey = pubKey }
 
 placeOrder :: Text -> Order -> IO (Either Error OrderId)
 placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
@@ -44,7 +44,7 @@ placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
                             , ("validate","true")
                             ]
                 , optApiPrivKey = privKey
-                , optApiPubKey = pubKey } True
+                , optApiPubKey = pubKey }
 
 buyLimit :: Order -> IO (Either Error OrderId)
 buyLimit = placeOrder "buy"

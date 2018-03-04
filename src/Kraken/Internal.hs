@@ -47,26 +47,25 @@ postDefaults nonce opts@Opts{..} = getDefaults opts & header "API-Key" .~ [optAp
                                                     & header "Content-Type" .~ ["application/x-www-form-urlencoded"]
 
 -- API CALLS ----------------------------------------------------------------------------------
-runGetApi :: FromJSON j => Opts -> Bool -> IO (Either Error j)
-runGetApi opts@Opts{..} b = do
+runGetApi :: FromJSON j => Opts -> IO (Either Error j)
+runGetApi opts = do
         let opts' = getDefaults opts
             url = getUrl opts id
-        (getWith opts' url >>= handleRes b) `E.catch` handleExcept
+        (getWith opts' url >>= handleRes) `E.catch` handleExcept
 
-runPostApi :: FromJSON j => Opts -> Bool -> IO (Either Error j)
-runPostApi opts@Opts{..} b = do
+runPostApi :: FromJSON j => Opts -> IO (Either Error j)
+runPostApi opts@Opts{..} = do
         nonce <- getNonce
         let opts' = postDefaults nonce opts
             url = getUrl opts id
             body = [ "nonce" := nonce ] <> toFormParam optPost
-        (postWith opts' url body >>= handleRes b) `E.catch` handleExcept
+        (postWith opts' url body >>= handleRes) `E.catch` handleExcept
 
 -- HANDLER ----------------------------------------------------------------------------------
-handleRes :: (Show a, FromJSON j, AsValue a) => Bool -> Response a -> IO (Either Error j)
-handleRes member resp = do
+handleRes :: (FromJSON j, AsValue a) => Response a -> IO (Either Error j)
+handleRes resp = do
         let (Just err) = resp ^? responseBody . key "error"
-        let result = if member then resp ^? responseBody . key "result" . members
-                               else resp ^? responseBody . key "result"
+        let result = resp ^? responseBody . key "result"
         case result of
             Just r  -> case fromJSON r of
                          Success s -> return $ Right s
