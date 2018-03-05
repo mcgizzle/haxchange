@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 309035ad3e35043399fcdf836b5f294bd251434a9b98c1a40630994ad182bec1
+-- hash: 45e67de3cfa48f3a7345377f6a3e3c220daa5a2345e6ba96e550e49dd9288241
 
 name:           haxchange
 version:        0.0.1
@@ -79,10 +79,10 @@ test-suite spec
     , bytestring
     , connection
     , containers
-    , crypto-binder
     , cryptohash-sha256
     , cryptohash-sha512
     , ghc
+    , haxchange
     , hspec
     , hspec-expectations
     , http-client

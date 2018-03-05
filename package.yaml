@@ -48,6 +48,6 @@ tests:
       - test
     dependencies:
       - base >= 4.7 && < 5
-      - crypto-binder
+      - haxchange
       - hspec
       - hspec-expectations

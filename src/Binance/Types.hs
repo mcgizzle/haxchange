@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Binance.Types where
@@ -37,7 +36,7 @@ instance FromJSON Ticker where
 instance FromJSON Balance where
         parseJSON = withObject "Account" $ \ o -> do
                 bal <- o .: "balances"
-                Balance . filter (\(_,y) -> y /= 0) <$> mapM toBal (V.toList bal)
+                Balance . filter ((/=) 0 . snd) <$> mapM toBal (V.toList bal)
                         where
                                 toBal :: Value -> Parser (Currency,Float)
                                 toBal = withObject "Balances" $ \ o -> do
@@ -54,7 +53,7 @@ instance FromJSON ServerTime where
 
 instance FromJSON OrderId where
         parseJSON = withObject "OrderId" $ \ o ->do
-                oId <- o .: "orderId" <|> return "TEST"
+                oId <- o .: "orderId" <|> pure "TEST"
                 pure $ OrderId oId
 
 instance FromJSON Error where
