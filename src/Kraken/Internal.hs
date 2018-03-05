@@ -20,14 +20,14 @@ import           Data.Monoid
 import           Network.Wreq
 
 -- HELPER FUNCTIONS ---------------------------------------------------------------------------
-getUrl :: Opts -> ([String] -> [String]) -> String
-getUrl Opts{..} f = intercalate "/" $ f [ "https://api.kraken.com"
+getUrl :: ([String] -> [String]) -> Opts -> String
+getUrl f Opts{..} = intercalate "/" $ f [ "https://api.kraken.com"
                                         , "0"
                                         , optApiType
                                         , optPath ]
 
 getUri :: Opts -> String
-getUri opts = getUrl opts (\(_:xs) -> "":xs)
+getUri = getUrl (\(_:xs) -> "":xs)
 
 apiSign :: Opts -> String -> ByteString
 apiSign opts@Opts{..} nonce = B64.encode $ SHA512.hmac b64Api
@@ -50,14 +50,14 @@ postDefaults nonce opts@Opts{..} = getDefaults opts & header "API-Key" .~ [optAp
 runGetApi :: FromJSON j => Opts -> IO (Either Error j)
 runGetApi opts = do
         let opts' = getDefaults opts
-            url = getUrl opts id
+            url = getUrl id opts
         (getWith opts' url >>= handleRes) `E.catch` handleExcept
 
 runPostApi :: FromJSON j => Opts -> IO (Either Error j)
 runPostApi opts@Opts{..} = do
         nonce <- getNonce
         let opts' = postDefaults nonce opts
-            url = getUrl opts id
+            url = getUrl id opts
             body = [ "nonce" := nonce ] <> toFormParam optPost
         (postWith opts' url body >>= handleRes) `E.catch` handleExcept
 

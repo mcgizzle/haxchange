@@ -1,15 +1,15 @@
-# crypto-binder 🤑
+# haxchange 🤑
 
 ## About
 The goal of this project is to create a uniform E-DSL for various cryptocurrency exchanges. This could have many uses from arbitraging to algorithmic trading. I will initially only be implementing a select set of functions, but the hope is to extend it in the future.
 
 ## Progress
 
-Exchange | getTicker | getBalance | buyLimit | sellLimit  
----|---|---|---|---
-Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
-Bittrex | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication_x:* | :heavy_multiplication_x:*
+Exchange | getMarkets | getTicker | getBalance | buyLimit | sellLimit  
+---|---|---|---|---|---
+Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+Binance | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
+Bittrex | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication_x:* | :heavy_multiplication_x:*
 
 *New accounts are currently blocked 
 

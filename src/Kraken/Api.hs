@@ -3,7 +3,7 @@
 module Kraken.Api where
 
 import           Types           (Balance (..), Error (..), MarketName (..),
-                                  Opts (..), Order (..), OrderId, ServerTime,
+ Markets(..),                                  Opts (..), Order (..), OrderId, ServerTime,
                                   Ticker (..))
 import           Utils
 
@@ -17,10 +17,13 @@ defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
 ping :: IO (Either Error ServerTime)
 ping = runGetApi defaultOpts { optPath = "Time" }
 
+getMarkets :: IO (Either Error Markets) 
+getMarkets = runGetApi defaultOpts { optPath = "AssetPairs" }
+
 getTicker :: MarketName -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optPath = "Ticker"
-        , optParams = [("pair",toText mrkt)]
+        , optParams = [("pair",toAsset mrkt)]
         }
 
 getBalance :: IO (Either Error Balance)

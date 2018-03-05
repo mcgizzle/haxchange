@@ -1,9 +1,10 @@
 {-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Kraken.Types where
 
 import           Types               (Balance (..), Currency (..),
-                                      Currency' (..), Error (..),
+ Markets(..),                                      Currency' (..), Error (..),
                                       MarketName (..), OrderId (..),
                                       ServerTime (..), Ticker (..))
 import qualified Types               as T
@@ -33,6 +34,16 @@ instance KrakenText Currency where
         toAsset (COIN a) = "X" <> toText (COIN a)
         toAsset (FIAT a) = "Z" <> toText (FIAT a)
         toAsset (NA a)   = "X" <> toText (NA a)
+
+
+instance FromJSON Markets where
+        parseJSON = withObject "Markets" $ \o -> pure $ Markets $ (toMarket . fst) <$> HM.toList o
+          where
+            toMarket :: Text -> MarketName
+            toMarket a = MarketName (T.fromText first) (T.fromText second)
+              where first = Text.tail $ Text.take 4 a
+                    second = Text.drop 5 a
+
 
 instance FromJSON OrderId where
         parseJSON (Object o) = parseObj $ HM.toList o

@@ -13,6 +13,10 @@ spec = do
                         res <- ping
                         res `shouldSatisfy` isRight
         describe "GET" $ do
+                it "Gets tradeable Asset Pairs" $ do
+                        res <- getMarkets
+                        print res
+                        res `shouldSatisfy` isRight
                 it "Account balance" $ do
                         res <- getBalance
                         res `shouldSatisfy` isRight
@@ -32,7 +36,7 @@ spec = do
                 it "Sell (incorrect info)" $ do
                         res <- sellLimit badOrder
                         res `shouldSatisfy` isLeft
-       where market    = MarketName (COIN BTC) (FIAT EUR)
+       where market    = MarketName (COIN ETH) (COIN BTC)
              badMarket = MarketName (COIN BTC) (COIN BTC)
              order     = Order market "100.00" "100.00"
              badOrder  = Order badMarket "100.00" "100.00"

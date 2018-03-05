@@ -76,6 +76,8 @@ instance TextConvert Currency' where
         fromText "ETH" = ETH
         fromText "LTC" = LTC
 
+newtype Markets = Markets [MarketName]
+        deriving(Show,Eq,Read)
 
 data MarketName = MarketName Currency Currency
         deriving (Show,Eq,Read)
