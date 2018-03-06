@@ -4,7 +4,6 @@ module Utils where
 import           Types
 
 import           Control.Arrow         (first)
-import           Data.Aeson            (FromJSON)
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as B8
 import           Data.List.Split       (splitOn)
@@ -28,7 +27,7 @@ toFormParam params = unzipWith (:=) $ first encodeUtf8 <$> params
 fromParams :: Params -> ByteString
 fromParams = encodeUtf8 . Text.intercalate "&" . unzipWith (\x y -> x <> "=" <> y)
 
-handleExcept :: FromJSON j => HttpException -> IO (Either Error j)
+handleExcept :: HttpException -> IO (Either Error j)
 handleExcept = return . Left . Exception
 
 --------------- KEYS ----------------------------------------------

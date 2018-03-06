@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Bittrex.Types where
 
-import           Types       (Currency (..), MarketName (..), Ticker (..))
+import           Types       (Currency (..), Market (..), Ticker (..))
 import qualified Types       as T
 
 import           Data.Aeson
@@ -21,16 +21,17 @@ data Opts = Opts
 class BittrexText a where
         toText :: a -> Text
 
-instance BittrexText MarketName where
-        toText (MarketName a b) = toText a <> "-" <> toText b
+instance BittrexText Market where
+        toText (Market a b) = toText a <> "-" <> toText b
 
 instance BittrexText Currency where
         toText = T.toText
 
-instance FromJSON MarketName where
-        parseJSON = withText "MarketName" $ \t -> do
-                let [t1,t2] = Text.splitOn "-" t
-                pure $ MarketName (T.fromText t1) (T.fromText t2)
+instance FromJSON Market where
+        parseJSON = withText "Market" $ \t -> do
+                case Text.splitOn "-" t of
+                  [t1,t2] -> pure $ Market (T.fromText t1) (T.fromText t2)
+                  _       -> fail "Error parsing market name"
 
 instance FromJSON Ticker where
         parseJSON = withObject "Ticker" $ \o -> do
@@ -39,6 +40,6 @@ instance FromJSON Ticker where
                 bidVol <- buy .: "Quantity"
                 sell <- o .: "sell"
                 ask <- sell .: "Quantity"
-                askVol <- o .: "Rate"
+                askVol <- sell .: "Rate"
                 pure $ Ticker bid ask askVol bidVol
 

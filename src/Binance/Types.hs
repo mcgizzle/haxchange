@@ -3,14 +3,16 @@
 module Binance.Types where
 
 import           Types               (Balance (..), Currency (..), Error (..),
-                                      MarketName (..), OrderId (..),
+                                      Market (..), Markets (..), OrderId (..),
                                       ServerTime (..), Ticker (..))
 import qualified Types               as T
 
 import           Control.Applicative
 import           Data.Aeson
 import           Data.Aeson.Types    (Parser)
+import qualified Data.Map            as Map
 import           Data.Text           (Text)
+import qualified Data.Text           as Text
 import qualified Data.Vector         as V
 import           Prelude             as P
 
@@ -19,7 +21,7 @@ import           Debug.Trace
 class BinanceText a where
         toText :: a -> Text
 
-instance BinanceText MarketName where
+instance BinanceText Market where
         toText = T.toText
 
 instance BinanceText Currency where
@@ -33,10 +35,22 @@ instance FromJSON Ticker where
                 bidVolume <- o .: "bidQty"
                 pure $ Ticker (read bid) (read ask) (read askVolume) (read bidVolume)
 
+instance FromJSON Market where
+        parseJSON = withObject "Market" $ \o -> do
+                mrkt <- o .: "symbol"
+                let mrkt' = case (Text.length mrkt) - 6 of
+                              0 -> mrkt
+                              n -> Text.drop n mrkt
+                let [f,s] = Text.chunksOf 3 mrkt'
+                pure $ Market (T.fromText f) (T.fromText s)
+
+instance FromJSON Markets where
+        parseJSON = withArray "Markets" $ \a -> Markets <$> mapM parseJSON (V.toList a)
+
 instance FromJSON Balance where
         parseJSON = withObject "Account" $ \ o -> do
                 bal <- o .: "balances"
-                Balance . filter ((/=) 0 . snd) <$> mapM toBal (V.toList bal)
+                Balance . Map.fromList . filter ((/=) 0 . snd) <$> mapM toBal (V.toList bal)
                         where
                                 toBal :: Value -> Parser (Currency,Float)
                                 toBal = withObject "Balances" $ \ o -> do

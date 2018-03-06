@@ -1,17 +1,18 @@
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE FlexibleInstances #-}
 module Kraken.Types where
 
 import           Types               (Balance (..), Currency (..),
- Markets(..),                                      Currency' (..), Error (..),
-                                      MarketName (..), OrderId (..),
+                                      Currency' (..), Error (..), Market (..),
+                                      Markets (..), OrderId (..),
                                       ServerTime (..), Ticker (..))
 import qualified Types               as T
 
 import           Control.Applicative
 import           Data.Aeson
 import           Data.HashMap.Lazy   as HM
+import qualified Data.Map            as Map
 import           Data.Monoid         ((<>))
 import           Data.Text           (Text)
 import qualified Data.Text           as Text
@@ -22,10 +23,10 @@ class KrakenText a where
         toText :: a -> Text
         toAsset :: a -> Text
 
-instance KrakenText MarketName where
+instance KrakenText Market where
         toText = T.toText
 
-        toAsset (MarketName a b) = toAsset a <> toAsset b
+        toAsset (Market a b) = toAsset a <> toAsset b
 
 instance KrakenText Currency where
         toText (COIN BTC) = "XBT"
@@ -39,8 +40,8 @@ instance KrakenText Currency where
 instance FromJSON Markets where
         parseJSON = withObject "Markets" $ \o -> pure $ Markets $ (toMarket . fst) <$> HM.toList o
           where
-            toMarket :: Text -> MarketName
-            toMarket a = MarketName (T.fromText first) (T.fromText second)
+            toMarket :: Text -> Market
+            toMarket a = Market (T.fromText first) (T.fromText second)
               where first = Text.tail $ Text.take 4 a
                     second = Text.drop 5 a
 
@@ -65,7 +66,7 @@ instance FromJSON Ticker where
         parseJSON _ = fail "Object not received"
 
 instance FromJSON Balance where
-        parseJSON = withObject "Balance" $ \o -> pure $ Balance $ toBal <$> HM.toList o
+        parseJSON = withObject "Balance" $ \o -> pure $ Balance $ Map.fromList $ toBal <$> HM.toList o
           where
             toBal :: (Text,Value) -> (Currency,Float)
             toBal (cur,val) = (cur',val')

@@ -2,9 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Api where
 
-import           Types           (Balance (..), Error (..), MarketName (..),
- Markets(..),                                  Opts (..), Order (..), OrderId, ServerTime,
-                                  Ticker (..))
+import           Types           (Balance (..), Error (..), Market (..),
+                                  Markets (..), Opts (..), Order (..), OrderId,
+                                  ServerTime, Ticker (..))
 import           Utils
 
 import           Data.Text       (Text)
@@ -17,10 +17,10 @@ defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty
 ping :: IO (Either Error ServerTime)
 ping = runGetApi defaultOpts { optPath = "Time" }
 
-getMarkets :: IO (Either Error Markets) 
+getMarkets :: IO (Either Error Markets)
 getMarkets = runGetApi defaultOpts { optPath = "AssetPairs" }
 
-getTicker :: MarketName -> IO (Either Error Ticker)
+getTicker :: Market -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optPath = "Ticker"
         , optParams = [("pair",toAsset mrkt)]

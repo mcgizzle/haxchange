@@ -2,8 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types            (Balance, Error, MarketName, Opts (..),
-                                   Order (..), OrderId, ServerTime, Ticker)
+import           Types            (Balance, Error, Market, Markets (..),
+                                   Opts (..), Order (..), OrderId, ServerTime,
+                                   Ticker)
 import           Utils
 
 import           Binance.Internal
@@ -17,7 +18,13 @@ defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty
 ping :: IO (Either Error ServerTime)
 ping = runGetApi defaultOpts { optPath = "time"}
 
-getTicker :: MarketName -> IO (Either Error Ticker)
+getMarkets :: IO (Either Error Markets)
+getMarkets = runGetApi defaultOpts
+        { optApiVersion = "v1"
+        , optPath       = "ticker/allBookTickers"
+        }
+
+getTicker :: Market -> IO (Either Error Ticker)
 getTicker mrkt = runGetApi defaultOpts
         { optApiVersion = "v3"
         , optPath       = "ticker/bookTicker"

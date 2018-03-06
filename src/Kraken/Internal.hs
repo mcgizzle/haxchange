@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 module Kraken.Internal where
 
 import           Kraken.Types           ()

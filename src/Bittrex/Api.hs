@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Bittrex.Api where
 
-import           Types            (MarketName (..), Ticker (..))
+import           Types            (Market (..), Ticker (..))
 
 import           Bittrex.Internal
 import           Bittrex.Types
@@ -9,7 +9,7 @@ import           Bittrex.Types
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public"
 
-getTicker :: MarketName -> IO (Either String Ticker)
+getTicker :: Market -> IO (Either String Ticker)
 getTicker mrkt = runApi defaultOpts
         { optPath = "getticker"
         , optParams = [("market",toText mrkt)] }

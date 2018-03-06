@@ -1,10 +1,13 @@
-{-# LANGUAGE DeriveGeneric     #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveFunctor              #-}
+{-# LANGUAGE DeriveGeneric              #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 module Types where
 
 import           Data.Aeson
 import           Data.ByteString     (ByteString)
+import           Data.Map            (Map)
 import           Data.Monoid         ((<>))
 import           Data.Text           (Text)
 import qualified Data.Text           as Text
@@ -36,7 +39,7 @@ data Currency =
         FIAT Currency'
       | COIN Currency'
       | NA Text
- deriving(Eq,Show,Read,Generic)
+ deriving(Eq,Show,Read,Generic,Ord)
 
 instance TextConvert Currency where
         toText (FIAT a) = toText a
@@ -58,7 +61,7 @@ data Currency' =
       | ETH
       | LTC
       | Text
-        deriving(Show,Eq,Read,Generic)
+        deriving(Show,Eq,Read,Generic,Ord)
 
 instance FromJSON Currency'
 
@@ -76,19 +79,19 @@ instance TextConvert Currency' where
         fromText "ETH" = ETH
         fromText "LTC" = LTC
 
-newtype Markets = Markets [MarketName]
+newtype Markets = Markets { unMarkets :: [Market]}
         deriving(Show,Eq,Read)
 
-data MarketName = MarketName Currency Currency
+data Market = Market Currency Currency
         deriving (Show,Eq,Read)
 
-instance TextConvert MarketName where
-        toText (MarketName a b) = toText a <> toText b
+instance TextConvert Market where
+        toText (Market a b) = toText a <> toText b
 
-        fromText a = MarketName (fromText $ head s) (fromText $ P.last s)
+        fromText a = Market (fromText $ head s) (fromText $ P.last s)
                 where s = Text.splitOn "-" a
 
-newtype Balance = Balance [(Currency,Float)]
+newtype Balance = Balance (Map Currency Float)
         deriving(Show,Generic)
 
 data Ticker =
@@ -102,7 +105,7 @@ data Ticker =
 
 data Order =
         Order {
-                orderMarket :: MarketName
+                orderMarket :: Market
               , orderPrice  :: Text
               , orderVolume :: Text
               }

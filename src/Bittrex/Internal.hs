@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 module Bittrex.Internal where
 
 import           Bittrex.Types
