@@ -2,9 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types            (Balance, Error, Market, Markets (..),
-                                   Opts (..), Order (..), OrderId, ServerTime,
-                                   Ticker)
+import           Types            (Balance, Error, Markets (..), Opts (..),
+                                   Order (..), OrderId, ServerTime,
+                                   Tickers (..))
 import           Utils
 
 import           Binance.Internal
@@ -24,11 +24,11 @@ getMarkets = runGetApi defaultOpts
         , optPath       = "ticker/allBookTickers"
         }
 
-getTicker :: Market -> IO (Either Error Ticker)
-getTicker mrkt = runGetApi defaultOpts
+getTicker :: Markets -> IO (Either Error Tickers)
+getTicker mrkts = runGetApi defaultOpts
         { optApiVersion = "v3"
         , optPath       = "ticker/bookTicker"
-        , optParams     = [("symbol",toText mrkt)]
+        , optParams     = [("symbol",toText mrkts)]
         }
 
 getBalance :: IO (Either Error Balance)

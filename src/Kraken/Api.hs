@@ -2,9 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Api where
 
-import           Types           (Balance (..), Error (..), Market (..),
-                                  Markets (..), Opts (..), Order (..), OrderId,
-                                  ServerTime, Ticker (..))
+import           Types           (Balance (..), Error (..), Markets (..),
+                                  Opts (..), Order (..), OrderId, ServerTime,
+                                  Tickers (..))
 import           Utils
 
 import           Data.Text       (Text)
@@ -20,10 +20,10 @@ ping = runGetApi defaultOpts { optPath = "Time" }
 getMarkets :: IO (Either Error Markets)
 getMarkets = runGetApi defaultOpts { optPath = "AssetPairs" }
 
-getTicker :: Market -> IO (Either Error Ticker)
-getTicker mrkt = runGetApi defaultOpts
+getTicker :: Markets -> IO (Either Error Tickers)
+getTicker mrkts = runGetApi defaultOpts
         { optPath = "Ticker"
-        , optParams = [("pair",toAsset mrkt)]
+        , optParams = [("pair",toText mrkts)]
         }
 
 getBalance :: IO (Either Error Balance)
@@ -39,7 +39,7 @@ placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
         runPostApi defaultOpts
                 { optPath = "AddOrder"
                 , optApiType = "private"
-                , optPost = [ ("pair", toAsset orderMarket)
+                , optPost = [ ("pair", toText orderMarket)
                             , ("type",t)
                             , ("ordertype","limit")
                             , ("price",orderPrice)

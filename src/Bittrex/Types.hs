@@ -41,5 +41,5 @@ instance FromJSON Ticker where
                 sell <- o .: "sell"
                 ask <- sell .: "Quantity"
                 askVol <- sell .: "Rate"
-                pure $ Ticker bid ask askVol bidVol
+                pure $ Ticker (T.fromText "NA") bid ask askVol bidVol
 

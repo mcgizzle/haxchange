@@ -46,20 +46,32 @@ instance TextConvert Currency where
         toText (COIN a) = toText a
         toText (NA a)   = a
 
-        fromText "EUR" = FIAT EUR
-        fromText "BTC" = COIN BTC
-        fromText "XBT" = COIN BTC
-        fromText "XRP" = COIN XRP
-        fromText "ETH" = COIN ETH
-        fromText "LTC" = COIN LTC
-        fromText a     = NA a
+        fromText "EUR"  = FIAT EUR
+        fromText "CAD"  = FIAT CAD
+        fromText "JPY"  = FIAT JPY
+        fromText "USDT" = FIAT USDT
+        fromText "BTC"  = COIN BTC
+        fromText "XBT"  = COIN BTC
+        fromText "ETH"  = COIN ETH
+        fromText "BNB"  = COIN BNB
+        fromText "XRP"  = COIN XRP
+        fromText "LTC"  = COIN LTC
+        fromText "ADA"  = COIN ADA
+        fromText "NAV"  = COIN NAV
+        fromText a      = NA a
 
 data Currency' =
         EUR
+      | USDT
+      | CAD
+      | JPY
       | BTC
       | XRP
       | ETH
       | LTC
+      | BNB
+      | ADA
+      | NAV
       | Text
         deriving(Show,Eq,Read,Generic,Ord)
 
@@ -94,9 +106,13 @@ instance TextConvert Market where
 newtype Balance = Balance (Map Currency Float)
         deriving(Show,Generic)
 
+newtype Tickers = Tickers { unTickers :: [Ticker] }
+        deriving(Show,Eq)
+
 data Ticker =
         Ticker {
-                 tickerBid       :: Float
+                 tickerMarket    :: Market
+               , tickerBid       :: Float
                , tickerAsk       :: Float
                , tickerAskVolume :: Float
                , tickerBidVolume :: Float

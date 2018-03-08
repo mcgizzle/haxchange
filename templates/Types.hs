@@ -24,6 +24,12 @@ instance <newmodule>Text MarketName where
 instance <newmodule>Text Currency where
         toText = T.toText
 
+instance FromJSON Markets
+
+instance FromJSON Market
+
+instance FromJSON Tickers
+
 instance FromJSON Ticker 
 
 instance FromJSON Balance 

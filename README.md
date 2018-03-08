@@ -8,7 +8,7 @@ The goal of this project is to create a uniform E-DSL for various cryptocurrency
 Exchange | getMarkets | getTicker | getBalance | buyLimit | sellLimit  
 ---|---|---|---|---|---
 Kraken | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-Binance | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
+Binance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:
 Bittrex | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x:* | :heavy_multiplication_x:* | :heavy_multiplication_x:*
 
 *New accounts are currently blocked 

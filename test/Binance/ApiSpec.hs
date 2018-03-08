@@ -24,7 +24,7 @@ spec = do
                         res `shouldSatisfy` isRight
                         print res
                 it "Ticker for ETH/BTC market" $ do
-                        res <- getTicker market
+                        res <- getTicker markets
                         res `shouldSatisfy` isRight
                         print res
         describe "POST" $ do
@@ -42,7 +42,9 @@ spec = do
                 it "Sell (incorrect info)" $ do
                         res <- sellLimit badOrder
                         res `shouldSatisfy` isLeft
-       where market    = Market (COIN ETH) (COIN BTC)
-             badMarket = Market (COIN BTC) (COIN BTC)
+       where markets   = Markets [market]
+             market    = Market (COIN ETH) (COIN BTC)
+             badMarkets = Markets [badMarket]
+             badMarket  = Market (COIN ETH) (COIN ETH)
              order     = Order market "100.00" "100.00"
              badOrder  = Order badMarket "100.00" "100.00"

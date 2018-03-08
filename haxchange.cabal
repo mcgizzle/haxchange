@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8c201367d5add6d80738350f9cc73058a41a0722e070b147cffa9b1ee0f24c38
+-- hash: d5df7913816c730e1c71ea26d649774b610d326437cb3a8e94b3e48aae2fde70
 
 name:           haxchange
 version:        0.0.1
@@ -30,6 +30,7 @@ library
   ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wredundant-constraints -Wincomplete-uni-patterns -fno-warn-orphans
   build-depends:
       aeson
+    , attoparsec
     , base >=4.7 && <5
     , base16-bytestring
     , base64-bytestring
@@ -73,6 +74,7 @@ test-suite spec
   ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wredundant-constraints -Wincomplete-uni-patterns -fno-warn-orphans
   build-depends:
       aeson
+    , attoparsec
     , base >=4.10 && <5
     , base16-bytestring
     , base64-bytestring
