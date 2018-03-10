@@ -9,10 +9,10 @@ import           Types                (Balance (..), Currency (..),
                                        ServerTime (..), Ticker (..),
                                        Tickers (..))
 import qualified Types                as T
+import           Utils
 
 import           Control.Applicative
 import           Data.Aeson
-import           Data.Aeson.Types     (Parser)
 import qualified Data.Attoparsec.Text as Atto
 import           Data.HashMap.Lazy    as HM
 import           Data.List            (intersperse)
@@ -31,10 +31,11 @@ instance KrakenText Markets where
 
 parseMarket :: Atto.Parser Market
 parseMarket = Market <$> ((T.fromText . Text.tail <$> Atto.take 4) <|> (T.fromText . Text.tail <$> Atto.take 5))
-                     <*> (T.fromText . Text.tail <$> ("XETH" <|> "XXBT" <|> "ZCAD" <|> "ZJPY"))
+                     <*> (T.fromText . Text.tail <$> ( "ZEUR" <|> "XETH" <|> "XXBT" <|> "ZCAD" <|> "ZJPY")) <* Atto.endOfInput
 
 instance KrakenText Market where
         toText (Market a b) = toText a <> toText b
+        toText MarketNA     = "ERROR"
 
 instance KrakenText Currency where
         toText (FIAT a) = "Z" <> toText a
@@ -49,27 +50,18 @@ instance FromJSON ServerTime where
         parseJSON = withObject "Time" $ \ o ->
                 ServerTime <$> o .: "unixtime"
 
-unParsedMarket :: Market
-unParsedMarket = Market (NA "Failed Parse") (NA "Failed Parse")
-
 instance FromJSON Markets where
-        parseJSON = withObject "Markets" $ \o -> Markets . P.filter ((/=) unParsedMarket) <$> (toMarket . fst) `mapM` HM.toList o
-          where
-            toMarket :: Text -> Parser Market
-            toMarket a = case Atto.parseOnly parseMarket a of
-                           Left _  -> pure $ Market (T.fromText "Failed Parse") (T.fromText "Failed Parse")
-                           Right r -> pure r
+        parseJSON = withObject "Markets" $ \o -> Markets . P.filter (mempty /=) <$> (monoidParse parseMarket . fst) `mapM` HM.toList o
 
 instance FromJSON Tickers where
         parseJSON (Object o) = Tickers <$> mapM parseObj (HM.toList o)
           where
-            parseObj (pair,Object o') = do
+            parseObj (pair, Object o') = do
                   (bid:bidVol:_) <- o' .: "b"
                   (ask:askVol:_) <- o' .: "a"
-                  case Atto.parseOnly parseMarket pair of
-                    Left _ -> fail "Error parsing market"
-                    Right r -> pure $ Ticker r (read bid) (read ask) (read askVol) (read bidVol)
-            parseObj _ = fail "Error parsing ticker"
+                  mrkt <- attoAeson parseMarket pair
+                  pure $ Ticker mrkt (read bid) (read ask) (read askVol) (read bidVol)
+            parseObj _ = fail "Ticker parse fail"
         parseJSON _ = fail "Object not received"
 
 instance FromJSON Balance where

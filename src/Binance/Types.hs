@@ -9,6 +9,7 @@ import           Types                (Balance (..), Currency (..), Error (..),
                                        ServerTime (..), Ticker (..),
                                        Tickers (..))
 import qualified Types                as T
+import           Utils
 
 import           Control.Applicative
 import           Data.Aeson
@@ -49,22 +50,16 @@ instance FromJSON Ticker where
                 ask    <- o .: "askPrice"
                 askVolume <- o .: "askQty"
                 bidVolume <- o .: "bidQty"
-                case Atto.parseOnly parseMarket mrkt of
-                  Left _ -> fail "Failed parsing Market"
-                  Right s -> pure $ Ticker s (read bid) (read ask) (read askVolume) (read bidVolume)
+                parsedMrkt <- attoAeson parseMarket mrkt
+                pure $ Ticker parsedMrkt (read bid) (read ask) (read askVolume) (read bidVolume)
 
 instance FromJSON Market where
-        parseJSON = withObject "Market" $ \o -> do
+        parseJSON = withObject "Market" $ \o ->  do
                 mrkt <- o .: "symbol"
-                case Atto.parseOnly parseMarket mrkt of
-                  Left _  -> pure $ Market (T.fromText "Failed Parse") (T.fromText "Failed Parse")
-                  Right s -> pure s
-
-unParsedMarket :: Market
-unParsedMarket = Market (NA "Failed Parse") (NA "Failed Parse")
+                monoidParse parseMarket mrkt
 
 instance FromJSON Markets where
-        parseJSON = withArray "Markets" $ \a -> Markets . P.filter ((/=) unParsedMarket) <$> mapM parseJSON (V.toList a)
+        parseJSON = withArray "Markets" $ \a -> Markets . P.filter (mempty /=) <$> mapM parseJSON (V.toList a)
 
 instance FromJSON Balance where
         parseJSON = withObject "Account" $ \ o -> do

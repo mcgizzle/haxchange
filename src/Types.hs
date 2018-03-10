@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveFunctor              #-}
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -9,6 +10,7 @@ import           Data.Aeson
 import           Data.ByteString     (ByteString)
 import           Data.Map            (Map)
 import           Data.Monoid         ((<>))
+import           Data.Semigroup      (Semigroup)
 import           Data.Text           (Text)
 import qualified Data.Text           as Text
 import           GHC.Generics
@@ -73,7 +75,7 @@ data Currency' =
       | ADA
       | NAV
       | Text
-        deriving(Show,Eq,Read,Generic,Ord)
+      deriving(Show,Eq,Read,Generic,Ord)
 
 instance FromJSON Currency'
 
@@ -94,8 +96,11 @@ instance TextConvert Currency' where
 newtype Markets = Markets { unMarkets :: [Market]}
         deriving(Show,Eq,Read)
 
-data Market = Market Currency Currency
-        deriving (Show,Eq,Read)
+data Market = Market Currency Currency | MarketNA
+        deriving (Show,Eq,Read,Semigroup)
+
+instance Monoid Market where
+        mempty = MarketNA
 
 instance TextConvert Market where
         toText (Market a b) = toText a <> toText b
