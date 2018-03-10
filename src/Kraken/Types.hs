@@ -23,26 +23,26 @@ import qualified Data.Text            as Text
 import qualified Data.Vector          as V
 import           Prelude              as P
 
-class KrakenText a where
+class ToText a where
         toText :: a -> Text
 
-instance KrakenText Markets where
+instance ToText Markets where
         toText m = mconcat $ intersperse "," $ toText <$> unMarkets m
 
 parseMarket :: Atto.Parser Market
 parseMarket = Market <$> ((T.fromText . Text.tail <$> Atto.take 4) <|> (T.fromText . Text.tail <$> Atto.take 5))
                      <*> (T.fromText . Text.tail <$> ( "ZEUR" <|> "XETH" <|> "XXBT" <|> "ZCAD" <|> "ZJPY")) <* Atto.endOfInput
 
-instance KrakenText Market where
+instance ToText Market where
         toText (Market a b) = toText a <> toText b
         toText MarketNA     = "ERROR"
 
-instance KrakenText Currency where
+instance ToText Currency where
         toText (FIAT a) = "Z" <> toText a
         toText (COIN a) = "X" <> toText a
         toText a        = "X" <> T.toText a
 
-instance KrakenText Currency' where
+instance ToText Currency' where
         toText BTC = "XBT"
         toText a   = T.toText a
 

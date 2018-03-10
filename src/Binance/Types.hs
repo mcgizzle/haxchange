@@ -23,20 +23,20 @@ import           Prelude              as P
 
 import           Debug.Trace
 
-class BinanceText a where
+class ToText a where
         toText :: a -> Text
 
-instance BinanceText Markets where
+instance ToText Markets where
         toText m = mconcat $ intersperse "," $ toText <$> unMarkets m
 
 parseMarket :: Atto.Parser Market
 parseMarket = Market <$> ((T.fromText <$> Atto.take 3) <|> (T.fromText <$> Atto.take 4))
                      <*> (T.fromText <$> ("BTC" <|> "ETH" <|> "BNB" <|> "USDT"))
 
-instance BinanceText Market where
+instance ToText Market where
         toText = T.toText
 
-instance BinanceText Currency where
+instance ToText Currency where
         toText = T.toText
 
 instance FromJSON Tickers where

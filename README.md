@@ -37,29 +37,24 @@ There are shared ADT's that are uniform accross all exchanges. Each exchange imp
 
 In order to improve effeciency, the data types are mostly [Text](http://sorryiwillinsertalinkatsomestage.com).
 
-There is an *TextConvert* type class which has the following functions
+There are *ToText* and *FromText* type classes which each have one method
 ```Haskell
-class TextConvert where
   toText :: a -> Text
   fromText :: Text -> a
 ```
 
-Each exchange then implements its own type class
-```Haskell
-class <Exchange>Text where
-  toText :: a -> Text
-```
+Each exchange then implements overrides the *ToText* class with its own implementation
+
 This helps with wrangling data into the unified model and vice-versa. The `toText` function is used to override the general version for special cases. 
 
-Implementations of the exchanges will often follow the following pattern:
 ```Haskell
 import qualified Types as T
-instance KrakenText Currency where
+instance ToText Currency where
   toText (COIN BTC) = "XBT"
   toText a          = T.toText a
   
 ```
-Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
+*Kraken refers to Bitcoin as XBT whereas most exchanges refer to it as BTC
 
 For more information please see the source
 

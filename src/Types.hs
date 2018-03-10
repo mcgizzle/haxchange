@@ -33,8 +33,10 @@ data Opts =
 
 -------------------------------------
 
-class TextConvert a where
+class FromText a where
         fromText :: Text -> a
+
+class ToText a where
         toText :: a -> Text
 
 data Currency =
@@ -43,11 +45,12 @@ data Currency =
       | NA Text
  deriving(Eq,Show,Read,Generic,Ord)
 
-instance TextConvert Currency where
+instance ToText Currency where
         toText (FIAT a) = toText a
         toText (COIN a) = toText a
         toText (NA a)   = a
 
+instance FromText Currency where
         fromText "EUR"  = FIAT EUR
         fromText "CAD"  = FIAT CAD
         fromText "JPY"  = FIAT JPY
@@ -60,6 +63,7 @@ instance TextConvert Currency where
         fromText "LTC"  = COIN LTC
         fromText "ADA"  = COIN ADA
         fromText "NAV"  = COIN NAV
+        fromText "XLM"  = COIN XLM
         fromText a      = NA a
 
 data Currency' =
@@ -74,24 +78,25 @@ data Currency' =
       | BNB
       | ADA
       | NAV
+      | XLM
       | Text
       deriving(Show,Eq,Read,Generic,Ord)
 
 instance FromJSON Currency'
 
-instance TextConvert Currency' where
-        toText EUR = "EUR"
-        toText BTC = "BTC"
-        toText XRP = "XRP"
-        toText ETH = "ETH"
-        toText LTC = "LTC"
+instance ToText Currency' where
+        toText EUR  = "EUR"
+        toText USDT = "USDT"
+        toText CAD  = "CAD"
+        toText JPY  = "JPY"
+        toText BTC  = "BTC"
+        toText XRP  = "XRP"
+        toText ETH  = "ETH"
+        toText LTC  = "LTC"
+        toText BNB  = "BNB"
+        toText ADA  = "ADA"
+        toText NAV  = "NAV"
 
-        fromText "EUR" = EUR
-        fromText "BTC" = BTC
-        fromText "XBT" = BTC
-        fromText "XRP" = XRP
-        fromText "ETH" = ETH
-        fromText "LTC" = LTC
 
 newtype Markets = Markets { unMarkets :: [Market]}
         deriving(Show,Eq,Read)
@@ -102,9 +107,10 @@ data Market = Market Currency Currency | MarketNA
 instance Monoid Market where
         mempty = MarketNA
 
-instance TextConvert Market where
+instance ToText Market where
         toText (Market a b) = toText a <> toText b
 
+instance FromText Market where
         fromText a = Market (fromText $ head s) (fromText $ P.last s)
                 where s = Text.splitOn "-" a
 
