@@ -38,6 +38,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Types
+    - Utils
     - Bittrex.Api
     - Kraken.Api
     - Binance.Api

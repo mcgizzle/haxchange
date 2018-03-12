@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d5df7913816c730e1c71ea26d649774b610d326437cb3a8e94b3e48aae2fde70
+-- hash: 4a3ab956cea0f2ad696374f22262a2592838e9ac7b1a9a6a993cdf4c9f5224b4
 
 name:           haxchange
 version:        0.0.1
@@ -52,6 +52,7 @@ library
     , wreq
   exposed-modules:
       Types
+      Utils
       Bittrex.Api
       Kraken.Api
       Binance.Api
@@ -62,7 +63,6 @@ library
       Bittrex.Types
       Kraken.Internal
       Kraken.Types
-      Utils
       Paths_haxchange
   default-language: Haskell2010
 

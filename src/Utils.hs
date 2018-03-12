@@ -46,10 +46,10 @@ monoidParse parser x = case AP.parseOnly parser x of
               Right r -> pure r
 
 --------------- KEYS ----------------------------------------------
-getKeys :: FilePath -> IO [ByteString]
-getKeys path = B8.lines <$> B8.readFile path
+getKeys' :: FilePath -> IO [ByteString]
+getKeys' path = B8.lines <$> B8.readFile path
 
-withKeys :: FilePath -> (ByteString -> ByteString -> IO b) -> IO b
-withKeys path f = do
-        [pubKey,privKey] <- getKeys path
-        f pubKey privKey
+getKeys :: FilePath -> IO APIKeys
+getKeys path = do
+        [pubKey,privKey] <- getKeys' path
+        return $ APIKeys pubKey privKey

@@ -2,8 +2,8 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Binance.Api where
 
-import           Types            (Balance, Error, Markets (..), Opts (..),
-                                   Order (..), OrderId, ServerTime,
+import           Types            (APIKeys (..), Balance, Error, Markets (..),
+                                   Opts (..), Order (..), OrderId, ServerTime,
                                    Tickers (..))
 import           Utils
 
@@ -31,8 +31,8 @@ getTicker mrkts = runGetApi defaultOpts
         , optParams     = [("symbol",toText mrkts)]
         }
 
-getBalance :: IO (Either Error Balance)
-getBalance = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
+getBalance :: APIKeys -> IO (Either Error Balance)
+getBalance (APIKeys pubKey privKey) =  do
         t <- timeInMilli
         runGetPrivApi defaultOpts
                 { optPath = "account"
@@ -42,8 +42,8 @@ getBalance = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
                 , optParams = [ ("timestamp",Text.pack t)]
                 }
 
-placeOrder :: Text -> Order -> IO (Either Error OrderId)
-placeOrder side Order{..} = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
+placeOrder :: APIKeys -> Text -> Order -> IO (Either Error OrderId)
+placeOrder (APIKeys pubKey privKey) side Order{..} = do
         t <- timeInMilli
         runPostApi defaultOpts
                     {
@@ -60,8 +60,8 @@ placeOrder side Order{..} = withKeys "keys/binance.txt" $ \ pubKey privKey -> do
                                 , ("timestamp",Text.pack t) ]
                     }
 
-buyLimit :: Order -> IO (Either Error OrderId)
-buyLimit = placeOrder "buy"
+buyLimit :: APIKeys -> Order -> IO (Either Error OrderId)
+buyLimit keys = placeOrder keys "buy"
 
-sellLimit :: Order -> IO (Either Error OrderId)
-sellLimit = placeOrder "sell"
+sellLimit :: APIKeys -> Order -> IO (Either Error OrderId)
+sellLimit keys = placeOrder keys "sell"

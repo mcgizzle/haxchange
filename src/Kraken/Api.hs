@@ -2,10 +2,9 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Kraken.Api where
 
-import           Types           (Balance (..), Error (..), Markets (..),
-                                  Opts (..), Order (..), OrderId, ServerTime,
-                                  Tickers (..))
-import           Utils
+import           Types           (APIKeys (..), Balance (..), Error (..),
+                                  Markets (..), Opts (..), Order (..), OrderId,
+                                  ServerTime, Tickers (..))
 
 import           Data.Text       (Text)
 import           Kraken.Internal
@@ -26,16 +25,16 @@ getTicker mrkts = runGetApi defaultOpts
         , optParams = [("pair",toText mrkts)]
         }
 
-getBalance :: IO (Either Error Balance)
-getBalance = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
+getBalance :: APIKeys -> IO (Either Error Balance)
+getBalance (APIKeys pubKey privKey) =
         runPostApi defaultOpts
                 { optPath = "Balance"
                 , optApiType = "private"
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-placeOrder :: Text -> Order -> IO (Either Error OrderId)
-placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
+placeOrder :: APIKeys -> Text -> Order -> IO (Either Error OrderId)
+placeOrder (APIKeys pubKey privKey) t Order{..} =
         runPostApi defaultOpts
                 { optPath = "AddOrder"
                 , optApiType = "private"
@@ -49,9 +48,9 @@ placeOrder t Order{..} = withKeys "keys/kraken.txt" $ \ pubKey privKey ->
                 , optApiPrivKey = privKey
                 , optApiPubKey = pubKey }
 
-buyLimit :: Order -> IO (Either Error OrderId)
-buyLimit = placeOrder "buy"
+buyLimit :: APIKeys -> Order -> IO (Either Error OrderId)
+buyLimit keys = placeOrder keys "buy"
 
-sellLimit :: Order -> IO (Either Error OrderId)
-sellLimit = placeOrder "sell"
+sellLimit :: APIKeys -> Order -> IO (Either Error OrderId)
+sellLimit keys = placeOrder keys "sell"
 

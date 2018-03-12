@@ -31,6 +31,7 @@ data Opts =
              , optPost       :: Params
              }
 
+data APIKeys = APIKeys ByteString ByteString
 -------------------------------------
 
 class FromText a where
