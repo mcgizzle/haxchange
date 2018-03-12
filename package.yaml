@@ -37,11 +37,12 @@ dependencies:
 library:
   source-dirs: src
   exposed-modules:
+    - Haxchange
     - Types
     - Utils
-    - Bittrex.Api
-    - Kraken.Api
-    - Binance.Api
+    - Haxchange.Bittrex.Api
+    - Haxchange.Kraken.Api
+    - Haxchange.Binance.Api
 
 tests:
   spec:
