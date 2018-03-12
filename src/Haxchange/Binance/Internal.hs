@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
-module Binance.Internal where
+module Haxchange.Binance.Internal where
 
 
 import           Types                   (Error (..), Opts (..))

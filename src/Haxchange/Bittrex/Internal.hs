@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
-module Bittrex.Internal where
+module Haxchange.Bittrex.Internal where
 
-import           Bittrex.Types
+import           Haxchange.Bittrex.Types
 
 import           Control.Lens
 import           Data.Aeson
 import           Data.Aeson.Lens
-import           Data.List       (intercalate)
-import qualified Data.Text       as Text
+import           Data.List               (intercalate)
+import qualified Data.Text               as Text
 import           Network.Wreq
 
 runApi :: FromJSON r => Opts -> IO (Either String r)

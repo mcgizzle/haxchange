@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveFunctor              #-}
 {-# LANGUAGE DeriveGeneric              #-}
+{-# LANGUAGE GADTs                      #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
@@ -97,6 +98,7 @@ instance ToText Currency' where
         toText BNB  = "BNB"
         toText ADA  = "ADA"
         toText NAV  = "NAV"
+        toText XLM  = "XLM"
 
 
 newtype Markets = Markets { unMarkets :: [Market]}
@@ -110,10 +112,6 @@ instance Monoid Market where
 
 instance ToText Market where
         toText (Market a b) = toText a <> toText b
-
-instance FromText Market where
-        fromText a = Market (fromText $ head s) (fromText $ P.last s)
-                where s = Text.splitOn "-" a
 
 newtype Balance = Balance (Map Currency Float)
         deriving(Show,Generic)

@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Bittrex.Api where
+module Haxchange.Bittrex.Api where
 
-import           Types            (Market (..), Ticker (..))
+import           Types                      (Market (..), Ticker (..))
 
-import           Bittrex.Internal
-import           Bittrex.Types
+import           Haxchange.Bittrex.Internal
+import           Haxchange.Bittrex.Types
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public"

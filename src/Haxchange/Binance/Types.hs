@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Binance.Types where
+module Haxchange.Binance.Types where
 
 import           Types                (Balance (..), Currency (..), Error (..),
                                        Market (..), Markets (..), OrderId (..),

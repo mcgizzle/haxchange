@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
-module Kraken.Internal where
+module Haxchange.Kraken.Internal where
 
-import           Kraken.Types           ()
+import           Haxchange.Kraken.Types ()
 import           Types                  (Error (..), Opts (..))
 import           Utils
 

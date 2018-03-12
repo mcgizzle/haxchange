@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Kraken.Types where
+module Haxchange.Kraken.Types where
 
 import           Types                (Balance (..), Currency (..),
                                        Currency' (..), Error (..), Market (..),

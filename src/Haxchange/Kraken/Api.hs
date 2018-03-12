@@ -1,14 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
-module Kraken.Api where
+module Haxchange.Kraken.Api where
 
-import           Types           (APIKeys (..), Balance (..), Error (..),
-                                  Markets (..), Opts (..), Order (..), OrderId,
-                                  ServerTime, Tickers (..))
+import           Types                     (APIKeys (..), Balance (..),
+                                            Error (..), Markets (..), Opts (..),
+                                            Order (..), OrderId, ServerTime,
+                                            Tickers (..))
 
-import           Data.Text       (Text)
-import           Kraken.Internal
-import           Kraken.Types
+import           Data.Text                 (Text)
+import           Haxchange.Kraken.Internal
+import           Haxchange.Kraken.Types
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" mempty mempty mempty mempty

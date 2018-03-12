@@ -1,16 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
-module Binance.Api where
+module Haxchange.Binance.Api where
 
-import           Types            (APIKeys (..), Balance, Error, Markets (..),
-                                   Opts (..), Order (..), OrderId, ServerTime,
-                                   Tickers (..))
+import           Types                      (APIKeys (..), Balance, Error,
+                                             Markets (..), Opts (..),
+                                             Order (..), OrderId, ServerTime,
+                                             Tickers (..))
 import           Utils
 
-import           Binance.Internal
-import           Binance.Types
-import           Data.Text        (Text)
-import qualified Data.Text        as Text
+import           Data.Text                  (Text)
+import qualified Data.Text                  as Text
+import           Haxchange.Binance.Internal
+import           Haxchange.Binance.Types
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty

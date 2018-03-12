@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Bittrex.Types where
+module Haxchange.Bittrex.Types where
 
 import           Types       (Currency (..), Market (..), Ticker (..))
 import qualified Types       as T
@@ -41,5 +41,5 @@ instance FromJSON Ticker where
                 sell <- o .: "sell"
                 ask <- sell .: "Quantity"
                 askVol <- sell .: "Rate"
-                pure $ Ticker (T.fromText "NA") bid ask askVol bidVol
+                pure $ Ticker MarketNA bid ask askVol bidVol
 
