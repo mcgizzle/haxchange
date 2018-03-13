@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Kraken.ApiSpec where
 
-import           Kraken.Api
+import           Haxchange.Kraken.Api
 import           Test.Hspec
 import           Test.Hspec.Expectations.Contrib
 import           Types

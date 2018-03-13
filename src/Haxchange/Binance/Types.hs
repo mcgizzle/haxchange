@@ -50,7 +50,7 @@ instance FromJSON Ticker where
                 ask    <- o .: "askPrice"
                 askVolume <- o .: "askQty"
                 bidVolume <- o .: "bidQty"
-                parsedMrkt <- attoAeson parseMarket mrkt
+                parsedMrkt <- monoidParse parseMarket mrkt
                 pure $ Ticker parsedMrkt (read bid) (read ask) (read askVolume) (read bidVolume)
 
 instance FromJSON Market where

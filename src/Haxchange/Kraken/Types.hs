@@ -31,7 +31,8 @@ instance ToText Markets where
 
 parseMarket :: Atto.Parser Market
 parseMarket = Market <$> ((T.fromText . Text.tail <$> Atto.take 4) <|> (T.fromText . Text.tail <$> Atto.take 5))
-                     <*> (T.fromText . Text.tail <$> ( "ZEUR" <|> "XETH" <|> "XXBT" <|> "ZCAD" <|> "ZJPY")) <* Atto.endOfInput
+                     <*> (T.fromText . Text.tail <$> ( "ZEUR" <|> "XETH" <|> "XXBT" <|> "ZCAD" <|> "ZJPY"))
+                     <* Atto.endOfInput
 
 instance ToText Market where
         toText (Market a b) = toText a <> toText b

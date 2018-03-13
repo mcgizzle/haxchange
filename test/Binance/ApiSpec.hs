@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Binance.ApiSpec where
 
-import           Binance.Api
+import           Haxchange.Binance.Api
 import           Test.Hspec
 import           Test.Hspec.Expectations.Contrib
 import           Types

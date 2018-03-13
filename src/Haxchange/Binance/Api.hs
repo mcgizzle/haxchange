@@ -5,7 +5,7 @@ module Haxchange.Binance.Api where
 import           Types                      (APIKeys (..), Balance, Error,
                                              Markets (..), Opts (..),
                                              Order (..), OrderId, ServerTime,
-                                             Tickers (..))
+                                             Ticker (..), Tickers (..))
 import           Utils
 
 import           Data.Text                  (Text)
@@ -25,12 +25,18 @@ getMarkets = runGetApi defaultOpts
         , optPath       = "ticker/allBookTickers"
         }
 
+-- FIXME: This is hack to get multiple tickers
+
 getTicker :: Markets -> IO (Either Error Tickers)
-getTicker mrkts = runGetApi defaultOpts
-        { optApiVersion = "v3"
-        , optPath       = "ticker/bookTicker"
-        , optParams     = [("symbol",toText mrkts)]
-        }
+getTicker mrkts = do
+        res <- runGetApi defaultOpts
+          { optApiVersion = "v3"
+          , optPath       = "ticker/bookTicker"
+          }
+        case res of
+          Left _  -> return res
+          Right r -> return $ Right $ Tickers $ filter (\ x -> (tickerMarket x) `notElem` unMrkts) (unTickers r)
+                  where unMrkts = unMarkets mrkts
 
 getBalance :: APIKeys -> IO (Either Error Balance)
 getBalance (APIKeys pubKey privKey) =  do
