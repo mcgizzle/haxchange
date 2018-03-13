@@ -1,4 +1,4 @@
 module Haxchange
-        (module Types) where
+        (module Haxchange.Types) where
 
-import           Types
+import           Haxchange.Types

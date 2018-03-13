@@ -4,8 +4,8 @@ module Kraken.ApiSpec where
 import           Haxchange.Kraken.Api
 import           Test.Hspec
 import           Test.Hspec.Expectations.Contrib
-import           Types
-import           Utils
+import           Haxchange.Types
+import           Haxchange.Utils
 
 spec :: Spec
 spec = do

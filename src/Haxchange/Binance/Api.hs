@@ -2,11 +2,11 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Haxchange.Binance.Api where
 
-import           Types                      (APIKeys (..), Balance, Error,
+import           Haxchange.Types                      (APIKeys (..), Balance, Error,
                                              Markets (..), Opts (..),
                                              Order (..), OrderId, ServerTime,
                                              Ticker (..), Tickers (..))
-import           Utils
+import           Haxchange.Utils
 
 import           Data.Text                  (Text)
 import qualified Data.Text                  as Text

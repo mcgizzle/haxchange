@@ -4,8 +4,8 @@ module Binance.ApiSpec where
 import           Haxchange.Binance.Api
 import           Test.Hspec
 import           Test.Hspec.Expectations.Contrib
-import           Types
-import           Utils
+import           Haxchange.Types
+import           Haxchange.Utils
 
 spec :: Spec
 spec = do

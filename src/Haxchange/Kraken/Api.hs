@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Haxchange.Kraken.Api where
 
-import           Types                     (APIKeys (..), Balance (..),
+import           Haxchange.Types                     (APIKeys (..), Balance (..),
                                             Error (..), Markets (..), Opts (..),
                                             Order (..), OrderId, ServerTime,
                                             Tickers (..))

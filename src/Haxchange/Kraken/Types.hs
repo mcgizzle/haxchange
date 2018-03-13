@@ -3,13 +3,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Haxchange.Kraken.Types where
 
-import           Types                (Balance (..), Currency (..),
+import           Haxchange.Types                (Balance (..), Currency (..),
                                        Currency' (..), Error (..), Market (..),
                                        Markets (..), OrderId (..),
                                        ServerTime (..), Ticker (..),
                                        Tickers (..))
-import qualified Types                as T
-import           Utils
+import qualified Haxchange.Types                as T
+import           Haxchange.Utils
 
 import           Control.Applicative
 import           Data.Aeson

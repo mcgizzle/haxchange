@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Utils where
+module Haxchange.Utils where
 
-import           Types
+import           Haxchange.Types
 
 import           Control.Arrow         (first)
 import qualified Data.Aeson.Types      as A

@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Haxchange.Bittrex.Types where
 
-import           Types       (Currency (..), Market (..), Ticker (..))
-import qualified Types       as T
+import           Haxchange.Types       (Currency (..), Market (..), Ticker (..))
+import qualified Haxchange.Types       as T
 
 import           Data.Aeson
 import           Data.Monoid ((<>))

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Haxchange.Bittrex.Api where
 
-import           Types                      (Market (..), Ticker (..))
+import           Haxchange.Types                      (Market (..), Ticker (..))
 
 import           Haxchange.Bittrex.Internal
 import           Haxchange.Bittrex.Types

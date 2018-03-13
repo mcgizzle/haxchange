@@ -3,8 +3,8 @@
 module Haxchange.Binance.Internal where
 
 
-import           Types                   (Error (..), Opts (..))
-import           Utils
+import           Haxchange.Types                   (Error (..), Opts (..))
+import           Haxchange.Utils
 
 import           Control.Exception       as E
 import           Control.Lens

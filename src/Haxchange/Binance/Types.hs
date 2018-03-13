@@ -4,12 +4,12 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Haxchange.Binance.Types where
 
-import           Types                (Balance (..), Currency (..), Error (..),
+import           Haxchange.Types                (Balance (..), Currency (..), Error (..),
                                        Market (..), Markets (..), OrderId (..),
                                        ServerTime (..), Ticker (..),
                                        Tickers (..))
-import qualified Types                as T
-import           Utils
+import qualified Haxchange.Types                as T
+import           Haxchange.Utils
 
 import           Control.Applicative
 import           Data.Aeson

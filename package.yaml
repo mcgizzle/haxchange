@@ -38,8 +38,8 @@ library:
   source-dirs: src
   exposed-modules:
     - Haxchange
-    - Types
-    - Utils
+    - Haxchange.Types
+    - Haxchange.Utils
     - Haxchange.Bittrex.Api
     - Haxchange.Kraken.Api
     - Haxchange.Binance.Api

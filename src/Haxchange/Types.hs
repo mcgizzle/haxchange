@@ -5,7 +5,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-module Types where
+module Haxchange.Types where
 
 import           Data.Aeson
 import           Data.ByteString     (ByteString)
