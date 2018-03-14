@@ -25,7 +25,7 @@ run the following
 
 ```
 cd templates
-stack make.hs <name of new exchange>
+sh make.sh <name of new exchange>
 ```
 
 This will copy the template files replacing all `<newmodule>` tags with the name of the new exchange.
