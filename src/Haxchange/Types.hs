@@ -107,6 +107,9 @@ newtype Markets = Markets { unMarkets :: [Market]}
 data Market = Market Currency Currency | MarketNA
         deriving (Show,Eq,Read,Semigroup)
 
+instance Ord Market where
+        (Market c1 c2) `compare` (Market c1' c2') = (c1 `compare` c1') `compare` (c2 `compare` c2')
+
 instance Monoid Market where
         mempty = MarketNA
 
@@ -128,6 +131,9 @@ data Ticker =
                , tickerBidVolume :: Float
                }
          deriving (Eq,Show,Generic)
+
+instance Ord Ticker where
+        (Ticker m1 _ _ _ _) `compare` (Ticker m2 _ _ _ _) = m1 `compare` m2
 
 data Order =
         Order {

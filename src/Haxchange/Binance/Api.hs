@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Haxchange.Binance.Api where
 
-import           Haxchange.Types                      (APIKeys (..), Balance, Error,
+import           Haxchange.Types            (APIKeys (..), Balance, Error,
                                              Markets (..), Opts (..),
                                              Order (..), OrderId, ServerTime,
                                              Ticker (..), Tickers (..))
@@ -12,6 +12,8 @@ import           Data.Text                  (Text)
 import qualified Data.Text                  as Text
 import           Haxchange.Binance.Internal
 import           Haxchange.Binance.Types
+
+import           Debug.Trace
 
 defaultOpts :: Opts
 defaultOpts = Opts mempty mempty "public" "v1" mempty mempty mempty
@@ -35,8 +37,7 @@ getTicker mrkts = do
           }
         case res of
           Left _  -> return res
-          Right r -> return $ Right $ Tickers $ filter (\ x -> (tickerMarket x) `notElem` unMrkts) (unTickers r)
-                  where unMrkts = unMarkets mrkts
+          Right r -> return $ Right $ Tickers $ filter (\ x -> tickerMarket x `elem` unMarkets mrkts) (unTickers r)
 
 getBalance :: APIKeys -> IO (Either Error Balance)
 getBalance (APIKeys pubKey privKey) =  do
